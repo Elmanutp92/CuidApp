@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1006706709630",
+    "project_id": "cuidapp-693f2",
+    "storage_bucket": "cuidapp-693f2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1006706709630:android:e0800b5f361efd23b9742f",
+        "android_client_info": {
+          "package_name": "com.example.cuida_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_L2-uZCfjGyqfv7uQUaPvU4Bf0m1rQ9E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
