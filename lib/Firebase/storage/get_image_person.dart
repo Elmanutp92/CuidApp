@@ -3,17 +3,17 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 final User? user = FirebaseAuth.instance.currentUser;
 
-Stream<String> getUrlImagePerson(String personId) async* {
-   final User? user = FirebaseAuth.instance.currentUser;
+Stream<String> getUrlImagePerson(String personId, String userId, String userEmail, String userName) async* {
+   
    
   try {
-    final String fileName = '${user!.displayName}${user.uid}';
+    final String fileName = '$userName-$userId';
 
     final Reference refUrl = FirebaseStorage.instance
         .ref()
-        .child(user.uid)
+        .child(userId)
         .child(fileName).child('person')
-        .child(user.email!).child('imagen').child(personId);
+        .child(userEmail).child('imagen').child(personId);
 
     final String url = await refUrl.getDownloadURL();
     if (url.isNotEmpty) {

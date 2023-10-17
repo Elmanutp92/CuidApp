@@ -6,12 +6,13 @@ Future<void> deleteUser(
   Function deleteUserOk,
   Function deleteUserNotOk,
   Function deleteUserNotOkError,
+  User? user,
 ) async {
   try {
     setLoading();
     
 
-    final User? user = FirebaseAuth.instance.currentUser;
+    
 
     if (user != null) {
       // Reautenticar antes de realizar operaciones sensibles

@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
-final User? user = FirebaseAuth.instance.currentUser;
 
-Future<Map<String, dynamic>> getPerson(String personId) async {
+
+
+Future<Map<String, dynamic>> getPerson(String personId, String userEmail, String userId) async {
   final db = FirebaseFirestore.instance;
   final documentReference = db
       .collection('users')
       .doc(
-          '${user!.email}-${user!.uid}')
+          '$userEmail-$userId')
       .collection('personas')
       .doc(personId);
 

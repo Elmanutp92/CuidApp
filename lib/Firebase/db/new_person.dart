@@ -3,8 +3,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-Future<void> newPerson(String name, String lastName, String age, String gender,
-    Function newPersonOk, Function newPersonFail, Function setLoading) async {
+Future<void> newPerson(
+    String name,
+    String lastName,
+    String age,
+    String gender,
+    Function newPersonOk,
+    Function newPersonFail,
+    Function setLoading,
+    String userEmail,
+    String userId) async {
   final Map<String, dynamic> person = {
     'name': name,
     'lastName': lastName,
@@ -17,8 +25,7 @@ Future<void> newPerson(String name, String lastName, String age, String gender,
     if (FirebaseAuth.instance.currentUser != null) {
       final DocumentReference docRef = await _firestore
           .collection('users')
-          .doc(
-              '${FirebaseAuth.instance.currentUser!.email}-${FirebaseAuth.instance.currentUser!.uid}')
+          .doc('$userEmail-$userId')
           .collection('personas')
           .add(person);
 

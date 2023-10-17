@@ -26,8 +26,19 @@ class CardPerson extends StatefulWidget {
 }
 
 class _CardPersonState extends State<CardPerson> {
+  String userName = '';
+
   @override
   Widget build(BuildContext context) {
+     FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        setState(() {
+          userName = user.displayName.toString();
+        });
+      }
+    });
     final Responsive responsive = Responsive(context);
     double dz = responsive.diagonal;
     double wz = responsive.screenHeight;
@@ -85,7 +96,7 @@ class _CardPersonState extends State<CardPerson> {
                               TextButton(
                                   onPressed: () async {
                                     await deletePerson(
-                                        widget.personId, widget.setLoading);
+                                        widget.personId, widget.setLoading, userName);
                                     widget.setEliminar();
                                   },
                                   child: Text(

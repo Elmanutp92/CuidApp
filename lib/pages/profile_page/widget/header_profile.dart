@@ -4,6 +4,7 @@ import 'package:cuida_app/Firebase/storage/get_image_profile.dart';
 import 'package:cuida_app/pages/profile_page/widget/profile_image.dart';
 import 'package:cuida_app/styles/colors.dart';
 import 'package:cuida_app/styles/responsive.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -25,6 +26,8 @@ class CardProfile extends StatefulWidget {
 class _CardProfileState extends State<CardProfile> {
   String? urlImage = '';
   File? imageProfile;
+  String userName = '';
+  String userId = '';
 
   @override
   void initState() {
@@ -33,6 +36,16 @@ class _CardProfileState extends State<CardProfile> {
 
   @override
   Widget build(BuildContext context) {
+     FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        setState(() {
+          userName = user.displayName.toString();
+          userId = user.uid.toString();
+        });
+      }
+    });
     final Responsive responsive = Responsive(context);
     double dz = responsive.diagonal;
     double wz = responsive.screenWidth;
@@ -60,7 +73,10 @@ class _CardProfileState extends State<CardProfile> {
                   child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: StreamBuilder<String>(
-                        stream: getUrlImageProfile(),
+                        stream: getUrlImageProfile(
+                          userId,
+                          userName,
+                        ),
                         builder: (BuildContext context,
                             AsyncSnapshot<String> snapshot) {
                           if (snapshot.connectionState ==

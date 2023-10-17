@@ -44,9 +44,26 @@ class _ReportsDataBaseState extends State<ReportsDataBase> {
       // Manejar el caso en que no hay usuario autenticado
     }
   }
-
+String userName = '';
+    String userEmail = '';
   @override
   Widget build(BuildContext context) {
+    
+
+
+     FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        setState(() {
+          userName = user.displayName.toString();
+          userEmail = user.email.toString();
+        });
+      }
+    });
+
+
+
     final Responsive responsive = Responsive(context);
     double wz = responsive.screenWidth;
     double hz = responsive.screenHeight;
@@ -57,7 +74,7 @@ class _ReportsDataBaseState extends State<ReportsDataBase> {
             width: wz * 0.99,
             height: hz * 0.21,
             child: StreamBuilder<List<Map<String, dynamic>>>(
-              stream: reportStream(widget.personId),
+              stream: reportStream(widget.personId, uEmail, userName),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const CircularProgressIndicator();

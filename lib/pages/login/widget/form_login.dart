@@ -1,10 +1,15 @@
 import 'package:cuida_app/Firebase/auth/auth_login.dart';
+import 'package:cuida_app/localAuth/local_auth.dart';
+import 'package:cuida_app/pages/home/home.dart';
 import 'package:cuida_app/pages/register/register.dart';
 
 import 'package:cuida_app/styles/colors.dart';
 import 'package:cuida_app/styles/responsive.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:iconsax/iconsax.dart';
 
 class FormLogin extends StatefulWidget {
   const FormLogin({
@@ -13,26 +18,35 @@ class FormLogin extends StatefulWidget {
     required this.loginOk,
     required this.passwordIconrrect,
     required this.userNotFound,
-    
   });
 
   final Function setLoading;
   final Function loginOk;
   final Function passwordIconrrect;
   final Function userNotFound;
- 
 
   @override
   State<FormLogin> createState() => _FormLoginState();
 }
 
 class _FormLoginState extends State<FormLogin> {
+  bool isUserActive = false;
+  bool isLoading = false;
   bool obscurePass = true;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   bool validarCorreo(String correo) {
+     FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        
+      } else {
+        setState(() {
+          isUserActive  = true;
+        });
+      }
+    });
     final RegExp regex = RegExp(
       r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
     );
@@ -142,6 +156,47 @@ class _FormLoginState extends State<FormLogin> {
                     ),
                   ),
                 ),
+              isUserActive ?  IconButton(
+                    onPressed: () async {
+                      print('autenticando');
+
+                      try {
+                        setState(() {
+                          isLoading = true;
+                        });
+
+                        bool isAuthenticated = await authenticate();
+
+                        if (isAuthenticated) {
+                          print('autenticado');
+                          // ignore: use_build_context_synchronously
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const HomePage()));
+                        } else {
+                          print('no autenticado');
+                          // ignore: use_build_context_synchronously
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Autenticación fallida'),
+                            ),
+                          );
+                        }
+                      } catch (e) {
+                        print('error al autenticar $e ');
+                        return;
+                      } finally {
+                        setState(() {
+                          isLoading = false;
+                        });
+                      }
+                    },
+                    icon: Icon(
+                      Iconsax.d_cube_scan,
+                      size: dz * 0.05,
+                      color: AppColors.accentColor,
+                    )) : const SizedBox(),
                 const Spacer(),
                 Container(
                   height: hz * 0.09,

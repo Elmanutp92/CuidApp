@@ -32,6 +32,8 @@ class ProfileImageHome extends StatefulWidget {
 
 class _ProfileImageHomeState extends State<ProfileImageHome> {
   final User? user = FirebaseAuth.instance.currentUser;
+  String userName = '';
+  String userId = '';
 
    String? urlImage = '';
   File? imageProfile;
@@ -43,6 +45,16 @@ class _ProfileImageHomeState extends State<ProfileImageHome> {
 
   @override
   Widget build(BuildContext context) {
+     FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        setState(() {
+          userName = user.displayName.toString();
+          userId = user.uid.toString();
+        });
+      }
+    });
     final Responsive responsive = Responsive(context);
     double dz = responsive.diagonal;
     double wz = responsive.screenWidth;
@@ -62,7 +74,9 @@ class _ProfileImageHomeState extends State<ProfileImageHome> {
                     await uploadImageFile(context, setImage, urlImage.toString(), false);
                   },
       child: StreamBuilder<String>(
-        stream: getUrlImageProfile(),
+        stream: getUrlImageProfile(
+            userId, userName
+        ),
         builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator();

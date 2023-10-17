@@ -45,6 +45,7 @@ dependencies:
   animated_checkmark: ^1.0.1
   iconsax: ^0.0.8
   provider: ^6.0.5
+  local_auth: ^2.1.7
   
   
   

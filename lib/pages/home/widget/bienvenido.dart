@@ -10,30 +10,47 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Bienvenido extends StatefulWidget {
-  const Bienvenido({super.key, });
-  
+  const Bienvenido({
+    super.key,
+  });
 
   @override
   State<Bienvenido> createState() => _BienvenidoState();
 }
 
 class _BienvenidoState extends State<Bienvenido> {
+
+  String userName = '';
+  String userId = '';
+
+
+
   @override
   Widget build(BuildContext context) {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        setState(() {
+          userName = user.displayName.toString();
+          userId = user.uid.toString();
+        });
+      }
+    });
     final Responsive responsive = Responsive(context);
     double dz = responsive.diagonal;
     double wz = responsive.screenWidth;
     //double hz = responsive.screenHeight;
 
     return StreamBuilder<String>(
-      stream: getUrlImageProfile(),
+      stream: getUrlImageProfile(userId, userName),
       builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
         return Container(
           height: wz * 0.3,
-          child: Stack(
-            children: [Stack(
-              children: [Container(
-                width: wz ,
+          child: Stack(children: [
+            Stack(children: [
+              Container(
+                width: wz,
                 decoration: BoxDecoration(
                   image: snapshot.hasData && snapshot.data!.isNotEmpty
                       ? DecorationImage(
@@ -42,18 +59,17 @@ class _BienvenidoState extends State<Bienvenido> {
                         )
                       : null, // Puedes agregar un fondo por defecto o dejarlo en blanco
                 ),
-               
               ),
               BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-          child: Container(
-            color: Colors.white.withOpacity(0.1),
-          ),
-        ),
+                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                child: Container(
+                  color: Colors.white.withOpacity(0.1),
+                ),
+              ),
             ]),
-             SizedBox(
+            SizedBox(
               width: wz,
-               child: Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Column(
@@ -76,23 +92,23 @@ class _BienvenidoState extends State<Bienvenido> {
                             ),
                           ),
                           Text(
-                        FirebaseAuth.instance.currentUser!.displayName.toString(),
-                        style: GoogleFonts.poppins(
-                          fontSize: dz * 0.02,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textColor,
-                        ),
-                      ),
+                            userName,
+                            style: GoogleFonts.poppins(
+                              fontSize: dz * 0.02,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textColor,
+                            ),
+                          ),
                         ],
                       ),
-                      
                     ],
                   ),
-                  const ProfileImageHome(wzo: 0.2, hzo: 0.1, border: true, isHome: true)
+                  const ProfileImageHome(
+                      wzo: 0.2, hzo: 0.1, border: true, isHome: true)
                 ],
-                         ),
-             ),
-               ] ),
+              ),
+            ),
+          ]),
         );
       },
     );

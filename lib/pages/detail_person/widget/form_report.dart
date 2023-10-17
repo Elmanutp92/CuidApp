@@ -1,5 +1,6 @@
 import 'package:cuida_app/Firebase/db/new_report.dart';
 import 'package:cuida_app/styles/colors.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 
@@ -20,12 +21,25 @@ class FormReport extends StatefulWidget {
 }
 
 class _FormReportState extends State<FormReport> {
+  String userId = '';
+  String userEmail = '';
+  
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+     FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        setState(() {
+          userId = user.uid.toString();
+          userEmail = user.email!.toString();
+        });
+      }
+    });
     //final Responsive responsive = Responsive(context);
     //double dz = responsive.diagonal;
     //double wz = responsive.screenWidth;
@@ -91,7 +105,7 @@ class _FormReportState extends State<FormReport> {
                           widget.setLoading,
                           widget.newReportOk,
                           widget.newReportFail,
-                          widget.docId);
+                          widget.docId, userEmail, userId);
                     }
                   },
                   child: const Text('Enviar'))

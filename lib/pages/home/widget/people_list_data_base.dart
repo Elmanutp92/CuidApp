@@ -2,8 +2,8 @@ import 'package:cuida_app/Firebase/db/get_person_list.dart';
 import 'package:cuida_app/pages/card_prueba.dart';
 import 'package:cuida_app/styles/colors.dart';
 import 'package:cuida_app/styles/responsive.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 
 class PeopleListDataBase extends StatefulWidget {
   const PeopleListDataBase({Key? key}) : super(key: key);
@@ -15,15 +15,27 @@ class PeopleListDataBase extends StatefulWidget {
 class _PeopleListDataBaseState extends State<PeopleListDataBase> {
   bool eliminar = false;
   bool isLoading = false;
+  String userId = '';
+  String userEmail = '';
 
   @override
   Widget build(BuildContext context) {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        setState(() {
+          userId = user.uid.toString();
+          userEmail = user.email.toString();
+        });
+      }
+    });
     final Responsive responsive = Responsive(context);
     double wz = responsive.screenWidth;
     double hz = responsive.screenHeight;
 
     return StreamBuilder<List<Map<String, dynamic>>>(
-      stream: personListStream(),
+      stream: personListStream(userEmail, userId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();
@@ -62,7 +74,5 @@ class _PeopleListDataBaseState extends State<PeopleListDataBase> {
         }
       },
     );
-
-   
   }
 }

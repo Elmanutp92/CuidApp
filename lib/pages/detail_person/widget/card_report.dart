@@ -3,6 +3,7 @@ import 'package:cuida_app/pages/loading_page.dart';
 
 import 'package:cuida_app/styles/colors.dart';
 import 'package:cuida_app/styles/responsive.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -26,9 +27,19 @@ class CardReport extends StatefulWidget {
 
 class _CardReportState extends State<CardReport> {
   bool isLoading = false;
+  String userName = '';
 
   @override
   Widget build(BuildContext context) {
+     FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        setState(() {
+          userName = user.displayName.toString();
+        });
+      }
+    });
     final Responsive responsive = Responsive(context);
     double wz = responsive.screenWidth;
     double hz = responsive.screenHeight;
@@ -67,7 +78,7 @@ class _CardReportState extends State<CardReport> {
                     IconButton(
                         onPressed: () async {
                           await deleteReport(
-                              widget.personId, widget.setLoading, widget.reportId);
+                              widget.personId, widget.setLoading, widget.reportId, userName);
                         },
                         icon: const Icon(Icons.delete))
                   ],

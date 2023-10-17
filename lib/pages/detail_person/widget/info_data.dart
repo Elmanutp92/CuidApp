@@ -1,5 +1,6 @@
 import 'package:cuida_app/Firebase/db/get_person_stream.dart';
 import 'package:cuida_app/styles/responsive.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -12,12 +13,24 @@ class InfoData extends StatefulWidget {
 }
 
 class _InfoDataState extends State<InfoData> {
+  String userName = '';
+  String userEmail = '';
   @override
   Widget build(BuildContext context) {
+     FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        setState(() {
+          userName = user.displayName.toString();
+          userEmail = user.email.toString();
+        });
+      }
+    });
     final Responsive responsive = Responsive(context);
     double dz = responsive.diagonal;
     return StreamBuilder<Map<String, dynamic>>(
-      stream: personStream(widget.personId),
+      stream: personStream(widget.personId, userEmail, userName),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           // Mientras se carga el stream, puedes mostrar un indicador de carga.

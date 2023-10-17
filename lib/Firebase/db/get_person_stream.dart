@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cuida_app/pages/profile_page/profile_page2.dart';
 
-Stream<Map<String, dynamic>> personStream(String personId) {
+
+
+Stream<Map<String, dynamic>> personStream(String personId, String userEmail, String userId) {
+  
+  
   final db = FirebaseFirestore.instance;
   final documentReference = db
       .collection('users')
-      .doc('${user!.email}-${user!.uid}')
+      .doc('$userEmail-$userId')
       .collection('personas')
       .doc(personId);
 

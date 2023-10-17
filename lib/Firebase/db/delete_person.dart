@@ -1,16 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
-final String? uId = FirebaseAuth.instance.currentUser?.uid;
+
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-Future<void> deletePerson(String personId, Function setLoading) async {
-  if (uId != null) {
+Future<void> deletePerson(String personId, Function setLoading, String userId) async {
+ 
     try {
       setLoading();
       await _firestore
           .collection('users')
-          .doc(uId)
+          .doc(userId)
           .collection('personas')
           .doc(personId)
           .delete();
@@ -19,7 +18,5 @@ Future<void> deletePerson(String personId, Function setLoading) async {
     } finally {
       setLoading();
     }
-  } else {
-    // Puedes manejar el caso en que uId es nulo
-  }
+ 
 }

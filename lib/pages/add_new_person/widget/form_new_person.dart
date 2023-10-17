@@ -1,4 +1,5 @@
 import 'package:cuida_app/Firebase/db/new_person.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,8 @@ class FormNewPerson extends StatefulWidget {
 }
 
 class _FormNewPersonState extends State<FormNewPerson> {
+  String userId = '';
+  String userEmail = '';
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
@@ -25,6 +28,16 @@ class _FormNewPersonState extends State<FormNewPerson> {
 
   @override
   Widget build(BuildContext context) {
+     FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        setState(() {
+          userId = user.uid.toString();
+          userEmail = user.email!.toString();
+        });
+      }
+    });
     return Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -90,7 +103,7 @@ class _FormNewPersonState extends State<FormNewPerson> {
                             _sexController.text,
                             widget.newPersonOk,
                             widget.newPersonFail,
-                            widget.setLoading);
+                            widget.setLoading, userEmail, userId);
                       }
                       
                     },

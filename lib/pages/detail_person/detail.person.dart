@@ -35,15 +35,18 @@ class DetailPerson extends StatefulWidget {
 }
 
 class _DetailPersonState extends State<DetailPerson> {
+  String userId = '';
+  String userEmail = '';
   String? urlImage = '';
   File? imageProfile;
+  String userName = '';
   final User? user = FirebaseAuth.instance.currentUser;
 
   Map<String, dynamic> data = {};
 
   void getData() async {
     try {
-      data = await getPerson(widget.personId);
+      data = await getPerson(widget.personId, userEmail, userId);
     } catch (e) {
       print('Error al obtener el documento de la persona: $e');
       return;
@@ -52,6 +55,17 @@ class _DetailPersonState extends State<DetailPerson> {
 
   @override
   Widget build(BuildContext context) {
+     FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        setState(() {
+          userId = user.uid.toString();
+          userEmail = user.email.toString();
+          userName = user.displayName.toString();
+        });
+      }
+    });
     final Responsive responsive = Responsive(context);
     double hz = responsive.screenHeight;
     double dz = responsive.diagonal;
@@ -91,7 +105,8 @@ class _DetailPersonState extends State<DetailPerson> {
                     height: hz * 0.2,
                     width: double.infinity,
                     child: StreamBuilder<String>(
-                      stream: getUrlImagePerson(widget.personId),
+                      stream: getUrlImagePerson(widget.personId, userId, userEmail, userName 
+                      ),
                       builder: (BuildContext context,
                           AsyncSnapshot<String> snapshot) {
                         if (snapshot.connectionState ==

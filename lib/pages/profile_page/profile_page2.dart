@@ -7,7 +7,7 @@ import 'package:cuida_app/pages/home/home.dart';
 import 'package:cuida_app/pages/home/widget/profile_image_home.dart';
 import 'package:cuida_app/pages/loading_page.dart';
 import 'package:cuida_app/pages/login/login.dart';
-import 'package:cuida_app/pages/profile_page/profile_page.dart';
+
 import 'package:cuida_app/styles/colors.dart';
 import 'package:cuida_app/styles/responsive.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,16 +22,30 @@ class ProfilePage2 extends StatefulWidget {
   State<ProfilePage2> createState() => _ProfilePage2State();
 }
 
-final User? user = FirebaseAuth.instance.currentUser;
-final userName = user!.displayName;
-final userEmail = user!.email;
-final userMetadata = user!.metadata;
-
 class _ProfilePage2State extends State<ProfilePage2> {
+  String userName = '';
+  String userEmail = '';
+  String userMetadata = '';
+  String userId = '';
+  User? currentUser;
   final TextEditingController _passwordController = TextEditingController();
   bool isLoading = false;
   @override
   Widget build(BuildContext context) {
+    
+     FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        setState(() {
+          userName = user.displayName.toString();
+          userEmail = user.email.toString();
+          userMetadata = user.metadata.creationTime.toString();
+          currentUser = user;
+          userId = user.uid.toString();
+        });
+      }
+    });
     final Responsive responsive = Responsive(context);
     double wz = responsive.screenWidth;
     double hz = responsive.screenHeight;
@@ -56,7 +70,10 @@ class _ProfilePage2State extends State<ProfilePage2> {
                           height: hz * 0.33,
                         ),
                         StreamBuilder<String>(
-                            stream: getUrlImageProfile(),
+                            stream: getUrlImageProfile(
+                              userId,
+                              userName,
+                            ),
                             builder: (BuildContext context,
                                 AsyncSnapshot<String> snapshot) {
                               return Stack(children: [
@@ -94,7 +111,6 @@ class _ProfilePage2State extends State<ProfilePage2> {
                                 ),
                               ]);
                             }),
-                       
                         SafeArea(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -210,6 +226,7 @@ class _ProfilePage2State extends State<ProfilePage2> {
                                                       deleteUserOk,
                                                       deleteUserNotOk,
                                                       deleteUserNotOkError,
+                                                      currentUser,
                                                     );
                                                   },
                                                   child: Text('Eliminar',
@@ -316,10 +333,8 @@ class _ProfilePage2State extends State<ProfilePage2> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => ProfilePage(
-                  userEmail: userEmail.toString(),
-                  metaData: userMetadata.toString(),
-                  userName: userName.toString(),
+            builder: (context) =>const  ProfilePage2(
+                
                 )));
   }
 
@@ -332,10 +347,8 @@ class _ProfilePage2State extends State<ProfilePage2> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => ProfilePage(
-                  userEmail: userEmail.toString(),
-                  metaData: userMetadata.toString(),
-                  userName: userName.toString(),
+            builder: (context) => const ProfilePage2(
+                  
                 )));
   }
 }

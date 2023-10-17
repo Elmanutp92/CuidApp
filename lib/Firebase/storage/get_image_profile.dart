@@ -1,12 +1,12 @@
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:firebase_storage/firebase_storage.dart';
 
-Stream<String> getUrlImageProfile() async* {
+Stream<String> getUrlImageProfile(String userId, String userName) async* {
   try {
     final Reference refUrl = FirebaseStorage.instance
         .ref()
-        .child(FirebaseAuth.instance.currentUser!.uid.toString())
-        .child( '${FirebaseAuth.instance.currentUser!.displayName}${FirebaseAuth.instance.currentUser!.uid.toString()}');
+        .child(userId)
+        .child( '$userName-$userId');
 
     final String url = await refUrl.getDownloadURL();
     if (url.isNotEmpty) {
