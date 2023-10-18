@@ -104,43 +104,39 @@ class _DetailPersonState extends State<DetailPerson> {
                   Container(
                     height: hz * 0.2,
                     width: double.infinity,
-                    child: StreamBuilder<String>(
-                      stream: getUrlImagePerson(widget.personId, userId, userEmail, userName 
-                      ),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<String> snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const CircularProgressIndicator();
-                        } else if (snapshot.hasError ||
-                            snapshot.data == 'Error') {
-                          return Icon(
-                            Icons.error_outline,
-                            size: dz * 0.1,
-                            color: Colors.red,
-                          );
-                        } else if (snapshot.hasData &&
-                            snapshot.data!.isNotEmpty) {
-                          return Stack(
-                            children: [
-                              withBlurBackground(snapshot.data),
-                              Center(
-                                child: CircleAvatar(
-                                  radius: dz * 0.1,
-                                  backgroundImage: NetworkImage(snapshot.data!),
-                                ),
-                              ),
-                            ],
-                          );
-                        } else {
-                          return Icon(
-                            Iconsax.additem,
-                            size: dz * 0.1,
-                            color: Colors.grey,
-                          );
-                        }
-                      },
-                    ),
+                    child: FutureBuilder<String>(
+  future: getUrlImagePerson(widget.personId, userId, userEmail, userName),
+  builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return const CircularProgressIndicator();
+    } else if (snapshot.hasError || snapshot.data == 'Error') {
+      return Icon(
+        Icons.error_outline,
+        size: dz * 0.1,
+        color: Colors.red,
+      );
+    } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+      return Stack(
+        children: [
+          withBlurBackground(snapshot.data),
+          Center(
+            child: CircleAvatar(
+              radius: dz * 0.1,
+              backgroundImage: NetworkImage(snapshot.data!),
+            ),
+          ),
+        ],
+      );
+    } else {
+      return Icon(
+        Iconsax.additem,
+        size: dz * 0.1,
+        color: Colors.grey,
+      );
+    }
+  },
+),
+
                   ),
                 ],
               ),

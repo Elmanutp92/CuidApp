@@ -1,14 +1,14 @@
 import 'dart:io';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:firebase_storage/firebase_storage.dart';
 
-Future<String> uploadImageProfile(File image) async {
+Future<String> uploadImageProfile(File image, String userName, String userId) async {
   try {
     final String fileName =
-        '${FirebaseAuth.instance.currentUser!.displayName}${FirebaseAuth.instance.currentUser!.uid.toString()}';
+        '$userName-$userId';
     final Reference imageRef = FirebaseStorage.instance
         .ref()
-        .child(FirebaseAuth.instance.currentUser!.uid.toString())
+        .child(userId)
         .child(fileName);
     final UploadTask uploadTask = imageRef.putFile(image);
 

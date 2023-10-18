@@ -5,6 +5,7 @@ import 'package:cuida_app/pages/login/widget/form_login.dart';
 import 'package:cuida_app/pages/register/widgets/header.dart';
 import 'package:cuida_app/styles/colors.dart';
 import 'package:cuida_app/styles/responsive.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -18,9 +19,12 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   bool isLoading = false;
   double dz = 0;
+  User? currentUser;
 
   @override
   Widget build(BuildContext context) {
+
+    
     final Responsive responsive = Responsive(context);
     double wz = responsive.screenWidth;
     double hz = responsive.screenHeight;

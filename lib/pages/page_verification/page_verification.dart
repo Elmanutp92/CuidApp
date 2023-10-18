@@ -1,7 +1,5 @@
 import 'dart:async';
 
-
-
 import 'package:cuida_app/pages/login/login.dart';
 import 'package:cuida_app/pages/page_verification/widget/email_verified.dart';
 import 'package:cuida_app/styles/colors.dart';
@@ -18,11 +16,9 @@ class VerificationPage extends StatefulWidget {
 }
 
 class _VerificationPageState extends State<VerificationPage> {
-
-
   late Color _iconColor;
   late Timer _timer;
-
+  User? currentUser;
 
   @override
   void initState() {
@@ -34,6 +30,15 @@ class _VerificationPageState extends State<VerificationPage> {
 
   @override
   Widget build(BuildContext context) {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        setState(() {
+          currentUser = user;
+        });
+      }
+    });
     return Scaffold(
       body: Center(
         child: SafeArea(
@@ -59,23 +64,17 @@ class _VerificationPageState extends State<VerificationPage> {
                   ),
                 ),
               ),
-             
-                   const Padding(
-                      padding: EdgeInsets.all(12.0),
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          AppColors.primaryColor,
-                        ),
-                      ),
-                    ),
-                  
+              const Padding(
+                padding: EdgeInsets.all(12.0),
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    AppColors.primaryColor,
+                  ),
+                ),
+              ),
               TextButton(
                 onPressed: () {
-                  FirebaseAuth.instance.currentUser!.delete();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Login()),
-                  );
+                  userDelete();
                 },
                 child: const Text(
                   'Cancelar',
@@ -114,23 +113,63 @@ class _VerificationPageState extends State<VerificationPage> {
   }
 
   Future<void> validar() async {
-    User? user;
+    while (currentUser == null || !currentUser!.emailVerified) {
+      await Future.delayed(const Duration(seconds: 1));
+      currentUser!.reload();
+    }
 
-    try {
-      while (user == null || !user.emailVerified) {
-        await Future.delayed(const Duration(seconds: 1));
-        user = FirebaseAuth.instance.currentUser;
-        user!.reload();
-      }
-      
+    // Cancelar el temporizador una vez que el usuario esté verificado.
+    _timer.cancel();
 
+    // Navegar a la siguiente pantalla después de la verificación.
+    // ignore: use_build_context_synchronously
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const EmailVerified()),
+    );
+  }
+
+ void userDelete() async {
+  try {
+    if (currentUser != null) {
+      print('El usuario no es null');
+
+      // Intenta eliminar al usuario
+      await currentUser!.delete();
+
+      // Verifica si el usuario se eliminó correctamente
+      bool userDeleted = FirebaseAuth.instance.currentUser == null;
+
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          duration: const Duration(seconds: 1),
+          content: Center(
+            child: Text(
+              userDeleted ? 'Vuelve pronto' : 'Ups, algo salió mal',
+              style: TextStyle(
+                fontSize:  12 ,
+                color: AppColors.textColor,
+                fontWeight: userDeleted ? FontWeight.normal : FontWeight.bold,
+              ),
+            ),
+          ),
+          backgroundColor: userDeleted ? AppColors.primaryColor : Colors.red,
+        ),
+      );
+
+      // Redirige a la pantalla de inicio de sesión o a donde sea necesario
       // ignore: use_build_context_synchronously
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const EmailVerified()),
+        MaterialPageRoute(builder: (context) => const Login()),
       );
-    } catch (e) {
-      print('Error durante la validación $e');
+    } else {
+      print('El usuario es null');
     }
+  } catch (e) {
+    print('Error de Firebase al eliminar el usuario: $e');
   }
+}
+
 }

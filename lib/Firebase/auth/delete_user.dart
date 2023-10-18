@@ -6,13 +6,11 @@ Future<void> deleteUser(
   Function deleteUserOk,
   Function deleteUserNotOk,
   Function deleteUserNotOkError,
-  User? user,
+  
 ) async {
   try {
+    final User? user = FirebaseAuth.instance.currentUser;
     setLoading();
-    
-
-    
 
     if (user != null) {
       // Reautenticar antes de realizar operaciones sensibles
@@ -27,14 +25,14 @@ Future<void> deleteUser(
       await user.delete();
       deleteUserOk();
     } else {
-   
+      print('No hay usuario logueado');
       deleteUserNotOk();
     }
   } on FirebaseException catch (e) {
-    
+    print('Error: ${e.code} ${e.message}');
     deleteUserNotOkError(e.code);
   } catch (e) {
-   
+    print('Error: $e');
     deleteUserNotOk();
   } finally {
     setLoading();

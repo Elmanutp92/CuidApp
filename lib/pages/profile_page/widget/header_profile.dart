@@ -36,7 +36,7 @@ class _CardProfileState extends State<CardProfile> {
 
   @override
   Widget build(BuildContext context) {
-     FirebaseAuth.instance.authStateChanges().listen((User? user) {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
         print('User is currently signed out!');
       } else {
@@ -68,17 +68,15 @@ class _CardProfileState extends State<CardProfile> {
               children: [
                 GestureDetector(
                   onTap: () async {
-                    await uploadImageFile(context, setImage, urlImage.toString(), false);
+                    await uploadImageFile(
+                        context, setImage, urlImage.toString(), false);
                   },
                   child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: StreamBuilder<String>(
-                        stream: getUrlImageProfile(
-                          userId,
-                          userName,
-                        ),
+                      child: FutureBuilder<String?>(
+                        future: getUrlImageProfile(userId, userName),
                         builder: (BuildContext context,
-                            AsyncSnapshot<String> snapshot) {
+                            AsyncSnapshot<String?> snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
                             return const CircularProgressIndicator();
@@ -105,8 +103,11 @@ class _CardProfileState extends State<CardProfile> {
                                 color: AppColors.backgroundColor,
                                 shape: BoxShape.circle,
                               ),
-                              child: Icon(Icons.camera_alt_outlined,
-                                  size: dz * 0.05, color: AppColors.textColor),
+                              child: Icon(
+                                Icons.camera_alt_outlined,
+                                size: dz * 0.05,
+                                color: AppColors.textColor,
+                              ),
                             );
                           }
                         },

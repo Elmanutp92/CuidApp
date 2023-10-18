@@ -7,11 +7,13 @@ import 'package:cuida_app/Firebase/storage/select_image_gallery.dart';
 
 import 'package:cuida_app/pages/profile_page/profile_page2.dart';
 import 'package:cuida_app/styles/colors.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 Future<void> uploadImageFile(
-    context, Function setImage, String imageUrl, bool addPerson,[ String? personId]) async {
+    context, Function setImage, String imageUrl, bool addPerson,
+    [String? personId]) async {
   File? localImageProfile;
   bool isLoading = false;
 
@@ -37,6 +39,18 @@ Future<void> uploadImageFile(
       ),
     );
   }
+
+  String userName = '';
+  String userId = '';
+
+  FirebaseAuth.instance.authStateChanges().listen((User? user) {
+    if (user == null) {
+      print('User is currently signed out!');
+    } else {
+      userName = user.displayName.toString();
+      userId = user.uid.toString();
+    }
+  });
 
   await showDialog(
     context: context,
@@ -135,21 +149,28 @@ Future<void> uploadImageFile(
                                 } else {
                                   final subio = !addPerson
                                       ? await uploadImageProfile(
-                                          localImageProfile!)
+                                          localImageProfile!, userName, userId)
                                       : await uploadImagePerson(
-                                          localImageProfile!, personId!);
+                                          localImageProfile!,
+                                          personId!,
+                                          userName,
+                                          userId);
                                   if (subio == 'Error') {
                                     print('Error al subir imagen');
                                   } else {
                                     print('Imagen subida correctamente');
                                     // ignore: use_build_context_synchronously
-                                    !addPerson ? Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>  const ProfilePage2()) 
-                                              
-                                    // ignore: use_build_context_synchronously
-                                    ) :   Navigator.pop(context);
+                                    !addPerson
+                                        // ignore: use_build_context_synchronously
+                                        ? Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const ProfilePage2())
+
+                                            // ignore: use_build_context_synchronously
+                                            )
+                                        : Navigator.pop(context);
                                   }
                                 }
                                 setState(() {

@@ -1,28 +1,29 @@
-
 import 'package:firebase_storage/firebase_storage.dart';
 
-Stream<String> getUrlImageProfile(String userId, String userName) async* {
+Future<String?> getUrlImageProfile(String userId, String userName) async {
   try {
-    final Reference refUrl = FirebaseStorage.instance
-        .ref()
-        .child(userId)
-        .child( '$userName-$userId');
+    final String fileName = '$userName-$userId';
+    final Reference refUrl = FirebaseStorage.instance.ref().child(userId).child(fileName);
 
     final String url = await refUrl.getDownloadURL();
+
     if (url.isNotEmpty) {
-      yield url;
+      print('URL de la imagen obtenida correctamente: $url');
+      return url;
     } else {
-      yield ''; // Emite una cadena vacía en lugar de 'Error'
+      print('Error: URL de la imagen vacía.');
+      return null;
     }
   } on FirebaseException catch (e) {
     if (e.code == 'object-not-found') {
-      yield ''; // Emite una cadena vacía en lugar de 'Error'
+      print('Error: El objeto PROFILE IMAGE ${userName}-${userId} no se encuentra en Firebase Storage.');
+      return null;
     } else {
-      yield ''; // Emite una cadena vacía en lugar de 'Error'
+      print('Error de Firebase al obtener la URL de la imagen: $e');
     }
-  } catch (e) {
-    print('Error al obtener la URL de la imagen: $e');
-    yield ''; // Emite una cadena vacía en lugar de 'Error'
+    return null;
+  } catch (error) {
+    print('Error inesperado al obtener la URL de la imagen: $error');
+    return null;
   }
 }
-

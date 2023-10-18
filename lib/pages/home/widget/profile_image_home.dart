@@ -1,13 +1,10 @@
 import 'dart:io';
 
 import 'package:cuida_app/Firebase/storage/get_image_profile.dart';
-
 import 'package:cuida_app/pages/profile_page/profile_page2.dart';
 import 'package:cuida_app/pages/profile_page/widget/profile_image.dart';
-
 import 'package:cuida_app/styles/responsive.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
@@ -18,34 +15,31 @@ class ProfileImageHome extends StatefulWidget {
     required this.wzo,
     required this.hzo,
     required this.border,
-    required this.isHome,
+    required this.isHome, 
   }) : super(key: key);
 
   final double wzo;
   final double hzo;
   final bool border;
   final bool isHome;
+  
+
 
   @override
   _ProfileImageHomeState createState() => _ProfileImageHomeState();
 }
 
 class _ProfileImageHomeState extends State<ProfileImageHome> {
-  final User? user = FirebaseAuth.instance.currentUser;
   String userName = '';
   String userId = '';
-
-   String? urlImage = '';
+  String? urlImage = '';
   File? imageProfile;
+  bool isFutureCalled = false;
 
   @override
   void initState() {
     super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-     FirebaseAuth.instance.authStateChanges().listen((User? user) {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
         print('User is currently signed out!');
       } else {
@@ -53,8 +47,29 @@ class _ProfileImageHomeState extends State<ProfileImageHome> {
           userName = user.displayName.toString();
           userId = user.uid.toString();
         });
+
+        // Llamamos al Future solo si no se ha llamado antes
+        if (!isFutureCalled) {
+          isFutureCalled = true;
+          loadUrlImage();
+        }
       }
     });
+  }
+
+  // Método para cargar la URL de la imagen
+  Future<void> loadUrlImage() async {
+    final url = await getUrlImageProfile(userId, userName);
+    if (url != null) {
+      // Solo actualizamos el estado si la URL no es nula
+      setState(() {
+        urlImage = url;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final Responsive responsive = Responsive(context);
     double dz = responsive.diagonal;
     double wz = responsive.screenWidth;
@@ -70,17 +85,21 @@ class _ProfileImageHomeState extends State<ProfileImageHome> {
                 ),
               );
             }
-          : ()async {
-                    await uploadImageFile(context, setImage, urlImage.toString(), false);
-                  },
-      child: StreamBuilder<String>(
-        stream: getUrlImageProfile(
-            userId, userName
-        ),
-        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+          : () async {
+              await uploadImageFile(
+                  context, setImage, urlImage.toString(), false);
+            },
+      child: FutureBuilder<String?>(
+        future: Future.value(urlImage), // Usamos Future.value para evitar llamadas innecesarias
+        builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
-          } else if (snapshot.hasError || snapshot.data == 'Error') {
+            return const Column(
+              children: [
+                CircularProgressIndicator(),
+                Text('Waiting...'),
+              ],
+            );
+          } else if (snapshot.hasError) {
             return Icon(
               Icons.error_outline,
               size: dz * 0.1,
@@ -90,30 +109,42 @@ class _ProfileImageHomeState extends State<ProfileImageHome> {
             return !widget.border
                 ? notBorder(snapshot.data!, wz * widget.wzo, hz * widget.hzo)
                 : withBorder(snapshot.data!, wz * widget.wzo, hz * widget.hzo);
-          } else {
+          } else if (snapshot.connectionState == ConnectionState.none ||
+              (snapshot.data!.isEmpty && snapshot.data == '')) {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                 widget.isHome ? Text('Perfil ', style: GoogleFonts.poppins(
-                  color: Colors.grey,
-                  fontSize: dz * 0.015,
-                ),
-                ) : const SizedBox(),
+                widget.isHome
+                    ? Text(
+                        'Perfil ',
+                        style: GoogleFonts.poppins(
+                          color: Colors.grey,
+                          fontSize: dz * 0.015,
+                        ),
+                      )
+                    : const SizedBox(),
                 Column(
                   children: [
                     Icon(
-                     !widget.isHome ? Iconsax.additem: Iconsax.user,
-                      size: widget.isHome ?  dz * 0.04 : dz * 0.16,
+                      !widget.isHome ? Iconsax.additem : Iconsax.user,
+                      size: widget.isHome ? dz * 0.04 : dz * 0.16,
                       color: Colors.grey,
                     ),
-                    !widget.isHome ? Text('Agregar foto ', style: GoogleFonts.poppins(
-                  color: Colors.grey,
-                  fontSize: dz * 0.015,
-                    )): const SizedBox(),
+                    !widget.isHome
+                        ? Text(
+                            'Agregar foto ',
+                            style: GoogleFonts.poppins(
+                              color: Colors.grey,
+                              fontSize: dz * 0.015,
+                            ),
+                          )
+                        : const SizedBox(),
                   ],
                 ),
               ],
             );
+          } else {
+            return const CircularProgressIndicator();
           }
         },
       ),
@@ -173,6 +204,7 @@ class _ProfileImageHomeState extends State<ProfileImageHome> {
       ),
     );
   }
+
   void setImage(image) {
     setState(() {
       imageProfile = File(image);

@@ -19,14 +19,14 @@ class Bienvenido extends StatefulWidget {
 }
 
 class _BienvenidoState extends State<Bienvenido> {
-
   String userName = '';
   String userId = '';
-
-
+  String? urlImage = '';
+  bool isFutureCalled = false;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
         print('User is currently signed out!');
@@ -35,30 +35,46 @@ class _BienvenidoState extends State<Bienvenido> {
           userName = user.displayName.toString();
           userId = user.uid.toString();
         });
+
+        // Llamamos al Future solo si no se ha llamado antes
+        if (!isFutureCalled) {
+          isFutureCalled = true;
+          loadUrlImage();
+        }
       }
     });
+  }
+
+  Future<void> loadUrlImage() async {
+    final url = await getUrlImageProfile(userId, userName);
+    if (url != null) {
+      // Solo actualizamos el estado si la URL no es nula
+      setState(() {
+        urlImage = url;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final Responsive responsive = Responsive(context);
     double dz = responsive.diagonal;
     double wz = responsive.screenWidth;
     //double hz = responsive.screenHeight;
 
-    return StreamBuilder<String>(
-      stream: getUrlImageProfile(userId, userName),
-      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-        return Container(
-          height: wz * 0.3,
-          child: Stack(children: [
-            Stack(children: [
-              Container(
-                width: wz,
-                decoration: BoxDecoration(
-                  image: snapshot.hasData && snapshot.data!.isNotEmpty
-                      ? DecorationImage(
-                          image: NetworkImage(snapshot.data!),
-                          fit: BoxFit.cover,
-                        )
-                      : null, // Puedes agregar un fondo por defecto o dejarlo en blanco
-                ),
+    return FutureBuilder<String?>(
+      future: Future.value(urlImage),
+      builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Stack(
+            children: [
+              Positioned(
+                top: 12,
+                child: SizedBox(
+                    width: wz,
+                    child: const Center(
+                      child: CircularProgressIndicator(),
+                    )),
               ),
               BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
@@ -66,50 +82,88 @@ class _BienvenidoState extends State<Bienvenido> {
                   color: Colors.white.withOpacity(0.1),
                 ),
               ),
-            ]),
-            SizedBox(
-              width: wz,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Column(
-                    children: [
-                      Text(
-                        'CuidApp',
-                        style: GoogleFonts.poppins(
-                          fontSize: dz * 0.05,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textColor,
-                        ),
+            ],
+          );
+        } else if (snapshot.hasError) {
+          return const Text('Error');
+        } else if (snapshot.connectionState == ConnectionState.done ||
+            snapshot.hasData ||
+            snapshot.data != null) {
+          return Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            height: wz * 0.3,
+            child: Stack(
+              children: [
+                Stack(
+                  children: [
+                    Container(
+                      width: wz,
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                        image: NetworkImage(snapshot.data.toString()),
+                        fit: BoxFit.cover,
+                      )),
+                    ),
+                    BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                      child: Container(
+                        color: Colors.white.withOpacity(0.1),
                       ),
-                      Row(
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  width: wz,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Column(
                         children: [
                           Text(
-                            'Hola, ',
+                            'CuidApp',
                             style: GoogleFonts.poppins(
-                              fontSize: dz * 0.02,
+                              fontSize: dz * 0.05,
+                              fontWeight: FontWeight.bold,
                               color: AppColors.textColor,
                             ),
                           ),
-                          Text(
-                            userName,
-                            style: GoogleFonts.poppins(
-                              fontSize: dz * 0.02,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.textColor,
-                            ),
+                          Row(
+                            children: [
+                              Text(
+                                'Hola, ',
+                                style: GoogleFonts.poppins(
+                                  fontSize: dz * 0.02,
+                                  color: AppColors.textColor,
+                                ),
+                              ),
+                              Text(
+                                userName,
+                                style: GoogleFonts.poppins(
+                                  fontSize: dz * 0.02,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.textColor,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
+                      const ProfileImageHome(
+                        wzo: 0.2,
+                        hzo: 0.1,
+                        border: true,
+                        isHome: true,
+                      )
                     ],
                   ),
-                  const ProfileImageHome(
-                      wzo: 0.2, hzo: 0.1, border: true, isHome: true)
-                ],
-              ),
+                ),
+              ],
             ),
-          ]),
-        );
+          );
+        }
+        return const CircularProgressIndicator();
       },
     );
   }

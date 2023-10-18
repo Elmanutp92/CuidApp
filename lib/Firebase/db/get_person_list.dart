@@ -1,12 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-Stream<List<Map<String, dynamic>>> personListStream(
-    String userEmail, String userId) {
+Future<List<Map<String, dynamic>>> personListFuture(
+    String userEmail, String userId) async {
   final db = FirebaseFirestore.instance;
   final documentReference =
       db.collection('users').doc('$userEmail-$userId').collection('personas');
 
-  return documentReference.snapshots().map((querySnapshot) {
-    return querySnapshot.docs.map((doc) => doc.data()).toList();
-  });
+  final querySnapshot = await documentReference.get();
+  return querySnapshot.docs.map((doc) => doc.data()).toList();
 }
