@@ -1,19 +1,21 @@
-import 'package:cuida_app/pages/detail_person/detail.person.dart';
-import 'package:cuida_app/styles/colors.dart';
-import 'package:cuida_app/styles/responsive.dart';
-
-
+import 'package:cuida_app/Firebase/storage/get_image_person.dart';
+import 'package:cuida_app/widget/with_peron_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class CardPrueba extends StatefulWidget {
-  const CardPrueba(
-      {super.key, required this.personLastName, required this.personId, required this.personName, required this.personAge, required this.personGender,
-      });
+  const CardPrueba({
+    super.key,
+    required this.personLastName,
+    required this.personId,
+    required this.personName,
+    required this.personAge,
+    required this.personGender,
+  });
 
   final String personLastName;
   final String personId;
-final String personName;
+  final String personName;
   final String personAge;
   final String personGender;
 
@@ -22,103 +24,86 @@ final String personName;
 }
 
 class _CardPruebaState extends State<CardPrueba> {
+  String userEmail = '';
+  String urlImage = '';
+  String userName = '';
+  String userId = '';
+  bool isFutureCalled = false;
+
+  Future<void> loadUrlImage() async {
+    final url =
+        await getUrlImagePerson(widget.personId, userId, userEmail, userName);
+    if (url.toString().isNotEmpty || url.toString() != '') {
+      // Solo actualizamos el estado si la URL no es nula
+      setState(() {
+        urlImage = url;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    print('urlImage desde init state: $urlImage');
+    super.initState();
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        setState(() {
+          userName = user.displayName.toString();
+          userId = user.uid.toString();
+          userEmail = user.email.toString();
+        });
+
+        // Llamamos al Future solo si no se ha llamado antes
+        if (!isFutureCalled) {
+          isFutureCalled = true;
+          loadUrlImage();
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final Responsive responsive = Responsive(context);
-    double dz = responsive.diagonal;
-    double wz = responsive.screenHeight;
+    return FutureBuilder<String?>(
+        future: Future.value(urlImage),
+        builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
+          if (snapshot.hasError) {
+            WithImagePerson(
+              personLastName: widget.personLastName,
+              personId: widget.personId,
+              personName: widget.personName,
+              personAge: widget.personAge,
+              personGender: widget.personGender,
+              urlPersonImage: snapshot.data.toString(),
+            );
+          } else if (!snapshot.hasData ||
+              snapshot.data!.isEmpty ||
+              snapshot.data == null) {
+            return WithImagePerson(
+              personLastName: widget.personLastName,
+              personId: widget.personId,
+              personName: widget.personName,
+              personAge: widget.personAge,
+              personGender: widget.personGender,
+              urlPersonImage: snapshot.data.toString(),
+            );
+          } else if (snapshot.connectionState == ConnectionState.waiting) {
+            // Muestra un indicador de carga mientras esperas los datos.
 
-    final styleCard =
-        GoogleFonts.poppins(fontSize: wz * 0.02, color: AppColors.textColor);
-    final styleCardPerson = GoogleFonts.poppins(
-        fontSize: wz * 0.02,
-        color: AppColors.textColor,
-        fontWeight: FontWeight.bold);
-
-    return SizedBox(
-      width: wz * 0.3,
-      child: Card(
-          color: Colors.blue.withOpacity(0.2),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Expanded(child: Icon(Icons.person)),
-                    Row(
-                      children: [
-                        Text(
-                          'Informacion',
-                          style: GoogleFonts.poppins(
-                            fontSize: dz * 0.012,
-                            color: AppColors.textColor,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return DetailPerson(
-                          personName: widget.personName,
-                          personGender: widget.personGender,
-                          personAge: widget.personAge,
-                          personId: widget.personId,
-                          personLastName: widget.personLastName,
-                        );
-                      }));
-                    },
-                    child: SizedBox(
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Text(
-                                    'Nombre: ',
-                                    style: styleCard,
-                                  ),
-                                  Text(
-                                    'Apellido:',
-                                    style: styleCard,
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Text(
-                                    widget.personName,
-                                    style: styleCardPerson,
-                                  ),
-                                  Text(
-                                    widget.personLastName,
-                                    style: styleCardPerson,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                )
-              ],
-            ),
-          )),
-    );
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.data! == '') {
+            const Text('url vacias');
+          }
+          return WithImagePerson(
+            personLastName: widget.personLastName,
+            personId: widget.personId,
+            personName: widget.personName,
+            personAge: widget.personAge,
+            personGender: widget.personGender,
+            urlPersonImage: snapshot.data.toString(),
+          );
+        });
   }
 }

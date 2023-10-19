@@ -101,7 +101,13 @@ class _BienvenidoState extends State<Bienvenido> {
                     Container(
                       width: wz,
                       decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(50),
+                            bottomRight: Radius.circular(50),
+                          ),
+
                           image: DecorationImage(
+                            
                         image: NetworkImage(snapshot.data.toString()),
                         fit: BoxFit.cover,
                       )),
@@ -109,7 +115,13 @@ class _BienvenidoState extends State<Bienvenido> {
                     BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
                       child: Container(
+                        decoration:  BoxDecoration(
                         color: Colors.white.withOpacity(0.1),
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(50),
+                            bottomRight: Radius.circular(50),
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -126,7 +138,14 @@ class _BienvenidoState extends State<Bienvenido> {
                             style: GoogleFonts.poppins(
                               fontSize: dz * 0.05,
                               fontWeight: FontWeight.bold,
-                              color: AppColors.textColor,
+                              color: AppColors.textColor, // Color del texto
+                              shadows: [
+                                const Shadow(
+                                  color: Colors.white, // Color del borde
+                                  offset: Offset(0, 0),
+                                  blurRadius: 10, // Ancho del borde
+                                ),
+                              ],
                             ),
                           ),
                           Row(
@@ -136,6 +155,14 @@ class _BienvenidoState extends State<Bienvenido> {
                                 style: GoogleFonts.poppins(
                                   fontSize: dz * 0.02,
                                   color: AppColors.textColor,
+                                  shadows: [
+                                const Shadow(
+                                  color: Colors.white, // Color del borde
+                                  offset: Offset(0, 0),
+                                  blurRadius: 10, // Ancho del borde
+                                ),
+                              ],
+                                  
                                 ),
                               ),
                               Text(
@@ -144,6 +171,13 @@ class _BienvenidoState extends State<Bienvenido> {
                                   fontSize: dz * 0.02,
                                   fontWeight: FontWeight.w600,
                                   color: AppColors.textColor,
+                                  shadows: [
+                                const Shadow(
+                                  color: Colors.white, // Color del borde
+                                  offset: Offset(0, 0),
+                                  blurRadius: 10, // Ancho del borde
+                                ),
+                              ],
                                 ),
                               ),
                             ],

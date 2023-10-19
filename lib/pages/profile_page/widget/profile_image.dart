@@ -58,7 +58,7 @@ Future<void> uploadImageFile(
       return StatefulBuilder(
         builder: (context, setState) {
           return AlertDialog(
-            title: const Text('Selecciona una imagen'),
+            title: Center(child: const Text('Selecciona una imagen')),
             content: SingleChildScrollView(
               child: Column(
                 children: [
@@ -78,14 +78,11 @@ Future<void> uploadImageFile(
                                 )
                               : Image.file(localImageProfile!),
                         )
-                      : SizedBox(
+                      : imageUrl.isNotEmpty  && localImageProfile != null ? SizedBox(
                           height: MediaQuery.of(context).size.height * 0.2,
                           width: MediaQuery.of(context).size.width * 0.5,
-                          child: Image.network(
-                            imageUrl,
-                            fit: BoxFit.contain,
-                          ),
-                        ),
+                          child: Image.file(localImageProfile!)
+                        ) : const SizedBox(),
                   localImageProfile == null
                       ? Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

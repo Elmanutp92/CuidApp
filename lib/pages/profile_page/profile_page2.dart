@@ -1,7 +1,7 @@
 import 'package:cuida_app/pages/home/widget/profile_image_home.dart';
 import 'package:cuida_app/pages/loading_page.dart';
 import 'package:cuida_app/pages/login/login.dart';
-import 'package:cuida_app/pages/profile_page/widget/go_profile.dart';
+import 'package:cuida_app/pages/profile_page/widget/go_home.dart';
 import 'package:cuida_app/pages/profile_page/widget/gradient_background.dart';
 import 'package:cuida_app/pages/profile_page/widget/more_menu.dart';
 
@@ -71,7 +71,7 @@ class _ProfilePage2State extends State<ProfilePage2> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const GoProfile(),
+                              const GoToHome(),
                               Text(
                                 'Perfil',
                                 style: GoogleFonts.poppins(
@@ -164,7 +164,7 @@ class _ProfilePage2State extends State<ProfilePage2> {
                                 children: [
                                   Icon(
                                     Iconsax.login,
-                                    size: dz * 0.018,
+                                    size: dz * 0.03,
                                     color: AppColors.textColor,
                                   ),
                                   Expanded(

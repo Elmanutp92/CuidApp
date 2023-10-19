@@ -68,11 +68,13 @@ class _PeopleListDataBaseState extends State<PeopleListDataBase> {
           // Datos cargados correctamente, construye tu interfaz de usuario.
           print('Datos cargados correctamente: ${snapshot.data}');
           final List<Map<String, dynamic>> personas = snapshot.data!;
-
+    
           return SizedBox(
+           
             width: wz * 0.99,
             height: hz * 0.21,
             child: ListView.builder(
+              
               scrollDirection: Axis.horizontal,
               itemCount: personas.length,
               itemBuilder: (context, index) {

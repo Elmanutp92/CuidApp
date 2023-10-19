@@ -8,7 +8,6 @@ class Reports extends StatefulWidget {
   const Reports({super.key, required this.personName, required this.personId});
   final String personName;
   final String personId;
-  
 
   @override
   State<Reports> createState() => _ReportsState();

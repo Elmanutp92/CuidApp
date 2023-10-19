@@ -37,17 +37,19 @@ class _HomePageState extends State<HomePage> {
         child:  Scaffold(
           backgroundColor: AppColors.backgroundColor,
           body: SafeArea(
-            child: Column(
-              children: [
-                const Bienvenido(),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: PeopleList(
-                    newPersonOk: newPersonOk,
-                    newPersonFail: newPersonFail,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  const Bienvenido(),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: PeopleList(
+                      newPersonOk: newPersonOk,
+                      newPersonFail: newPersonFail,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ));

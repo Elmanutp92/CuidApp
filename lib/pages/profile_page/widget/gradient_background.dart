@@ -20,15 +20,12 @@ class _GradientBackgroundState extends State<GradientBackground> {
     return Stack(
       children: [
         Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [
-                  AppColors.primaryColor.withOpacity(0.5),
-                  AppColors.backgroundColor
-                ]),
-            borderRadius: const BorderRadius.only(
+                colors: [AppColors.accentColor, AppColors.backgroundColor]),
+            borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(50),
               bottomRight: Radius.circular(50),
             ),
@@ -42,12 +39,6 @@ class _GradientBackgroundState extends State<GradientBackground> {
               bottomLeft: Radius.circular(50),
               bottomRight: Radius.circular(50),
             ),
-          ),
-        ),
-        BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-          child: Container(
-            color: Colors.black.withOpacity(0.3),
           ),
         ),
       ],

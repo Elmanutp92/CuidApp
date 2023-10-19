@@ -29,9 +29,9 @@ class _PeopleListState extends State<PeopleList> {
       ),
       elevation: 20,
       color: Colors.blue[10],
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SingleChildScrollView(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
               Row(

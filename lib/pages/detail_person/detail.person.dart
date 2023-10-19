@@ -20,7 +20,7 @@ class DetailPerson extends StatefulWidget {
     required this.personAge,
     required this.personGender,
     required this.personId,
-    required this.personName, 
+    required this.personName,
   }) : super(key: key);
 
   final String personLastName;
@@ -28,7 +28,6 @@ class DetailPerson extends StatefulWidget {
   final String personGender;
   final String personId;
   final String personName;
-
 
   @override
   State<DetailPerson> createState() => _DetailPersonState();
@@ -40,7 +39,6 @@ class _DetailPersonState extends State<DetailPerson> {
   String? urlImage = '';
   File? imageProfile;
   String userName = '';
-  final User? user = FirebaseAuth.instance.currentUser;
 
   Map<String, dynamic> data = {};
 
@@ -54,8 +52,9 @@ class _DetailPersonState extends State<DetailPerson> {
   }
 
   @override
-  Widget build(BuildContext context) {
-     FirebaseAuth.instance.authStateChanges().listen((User? user) {
+  void initState() {
+    super.initState();
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
         print('User is currently signed out!');
       } else {
@@ -66,6 +65,10 @@ class _DetailPersonState extends State<DetailPerson> {
         });
       }
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final Responsive responsive = Responsive(context);
     double hz = responsive.screenHeight;
     double dz = responsive.diagonal;
@@ -99,50 +102,58 @@ class _DetailPersonState extends State<DetailPerson> {
                   widget.personId,
                 );
               },
-              child: Column(
-                children: [
-                  Container(
-                    height: hz * 0.2,
-                    width: double.infinity,
-                    child: FutureBuilder<String>(
-  future: getUrlImagePerson(widget.personId, userId, userEmail, userName),
-  builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-    if (snapshot.connectionState == ConnectionState.waiting) {
-      return const CircularProgressIndicator();
-    } else if (snapshot.hasError || snapshot.data == 'Error') {
-      return Icon(
-        Icons.error_outline,
-        size: dz * 0.1,
-        color: Colors.red,
-      );
-    } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-      return Stack(
-        children: [
-          withBlurBackground(snapshot.data),
-          Center(
-            child: CircleAvatar(
-              radius: dz * 0.1,
-              backgroundImage: NetworkImage(snapshot.data!),
-            ),
-          ),
-        ],
-      );
-    } else {
-      return Icon(
-        Iconsax.additem,
-        size: dz * 0.1,
-        color: Colors.grey,
-      );
-    }
-  },
-),
-
-                  ),
-                ],
+              child: Container(
+                color: Colors.transparent,
+                height: hz * 0.2,
+                width: double.infinity,
+                child: FutureBuilder<String>(
+                  future: getUrlImagePerson(
+                      widget.personId, userId, userEmail, userName),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<String> snapshot) {
+                    if (snapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return const Center(child: Text('Loading...'));
+                    } else if (snapshot.hasError ||
+                        snapshot.data == 'Error') {
+                      return Icon(
+                        Icons.error_outline,
+                        size: dz * 0.1,
+                        color: Colors.red,
+                      );
+                    } else if (snapshot.hasData ||
+                        snapshot.data.toString().isNotEmpty || snapshot.data.toString() != '') {
+                      return Stack(
+                        children: [
+                          withBlurBackground(snapshot.data),
+                          Center(
+                            child: CircleAvatar(
+                              radius: dz * 0.1,
+                              backgroundImage:
+                                  NetworkImage(snapshot.data.toString()),
+                            ),
+                          ),
+                        ],
+                      );
+                    } else {
+                      return Icon(
+                        Iconsax.additem,
+                        size: dz * 0.1,
+                        color: Colors.grey,
+                      );
+                    }
+                  },
+                ),
               ),
             ),
             InfoData(
               personId: widget.personId,
+              personName: widget.personName,
+              personLastName: widget.personLastName,
+              personAge: widget.personAge,
+              personGender: widget.personGender,
+
+              
             ),
             Reports(
               personId: widget.personId,

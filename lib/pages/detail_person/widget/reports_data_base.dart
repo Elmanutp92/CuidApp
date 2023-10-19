@@ -14,7 +14,6 @@ class ReportsDataBase extends StatefulWidget {
 
   final String personId;
 
-
   @override
   State<ReportsDataBase> createState() => _ReportsDataBaseState();
 }
@@ -29,6 +28,17 @@ class _ReportsDataBaseState extends State<ReportsDataBase> {
   void initState() {
     getUserId();
     super.initState();
+     FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        setState(() {
+          userName = user.displayName.toString();
+          userEmail = user.email.toString();
+        });
+      }
+    });
+
   }
 
   void getUserId() async {
@@ -44,26 +54,12 @@ class _ReportsDataBaseState extends State<ReportsDataBase> {
       // Manejar el caso en que no hay usuario autenticado
     }
   }
-String userName = '';
-    String userEmail = '';
+
+  String userName = '';
+  String userEmail = '';
+
   @override
   Widget build(BuildContext context) {
-    
-
-
-     FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (user == null) {
-        print('User is currently signed out!');
-      } else {
-        setState(() {
-          userName = user.displayName.toString();
-          userEmail = user.email.toString();
-        });
-      }
-    });
-
-
-
     final Responsive responsive = Responsive(context);
     double wz = responsive.screenWidth;
     double hz = responsive.screenHeight;
