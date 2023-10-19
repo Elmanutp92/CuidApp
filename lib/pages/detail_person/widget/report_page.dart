@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ReportsPage extends StatefulWidget {
-  const ReportsPage({Key? key, required this.userName, required this.docId}) : super(key: key);
+  const ReportsPage({Key? key, required this.userName, required this.personId}) : super(key: key);
   final String userName;
-  final String docId;
+  final String personId;
 
   @override
   State<ReportsPage> createState() => _ReportsPageState();
@@ -36,7 +36,7 @@ class _ReportsPageState extends State<ReportsPage> {
             )),
       ),
       body: !isLoading ?  FormReport(
-        docId: widget.docId,
+        personId: widget.personId,
         setLoading: setLoading,
         newReportOk: newReportOk,
         newReportFail: newReportFail,

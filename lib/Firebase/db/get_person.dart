@@ -23,7 +23,7 @@ Future<Map<String, dynamic>> getPerson(String personId, String userEmail, String
       return {}; // Retorna un mapa vacío en lugar de 'Error'
     }
   } catch (e) {
-    print('Error al obtener el documento de la persona: $e');
+
     return {}; // Retorna un mapa vacío en lugar de 'Error'
   }
 }

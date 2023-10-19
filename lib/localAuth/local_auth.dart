@@ -29,7 +29,7 @@ Future<bool> authenticate() async {
     }
   } catch (e) {
     // Manejar errores aquí
-    print(e);
+   
     return false;
   }
 }

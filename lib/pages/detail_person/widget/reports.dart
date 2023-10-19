@@ -39,7 +39,7 @@ class _ReportsState extends State<Reports> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => ReportsPage(
-                                  docId: widget.personId,
+                                  personId: widget.personId,
                                   userName: widget.personName,
                                 )));
                   },
@@ -53,6 +53,7 @@ class _ReportsState extends State<Reports> {
             height: dh * 0.55,
             //color: Colors.amber,
             child: ReportsDataBase(
+              personName: widget.personName,
               personId: widget.personId,
             ),
           )

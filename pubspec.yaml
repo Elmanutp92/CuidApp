@@ -41,11 +41,13 @@ dependencies:
   cloud_firestore: ^4.9.3
   image_picker: ^1.0.4
   firebase_storage: ^11.2.8
-  audioplayers: ^5.2.0
   animated_checkmark: ^1.0.1
   iconsax: ^0.0.8
   provider: ^6.0.5
   local_auth: ^2.1.7
+  cached_network_image: ^3.3.0
+  
+  audioplayers: ^5.2.0
   
   
   
@@ -76,7 +78,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/sound.mp3
+    - assets/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

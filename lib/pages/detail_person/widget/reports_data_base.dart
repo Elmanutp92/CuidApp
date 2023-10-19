@@ -1,4 +1,4 @@
-import 'package:cuida_app/Firebase/db/get_reports_stream.dart';
+import 'package:cuida_app/Firebase/db/get_reports_list.dart';
 import 'package:cuida_app/pages/detail_person/widget/card_report.dart';
 import 'package:cuida_app/styles/colors.dart';
 import 'package:cuida_app/styles/responsive.dart';
@@ -9,10 +9,11 @@ import 'package:google_fonts/google_fonts.dart';
 class ReportsDataBase extends StatefulWidget {
   const ReportsDataBase({
     Key? key,
-    required this.personId,
+    required this.personId, required this.personName,
   }) : super(key: key);
 
   final String personId;
+  final String personName;
 
   @override
   State<ReportsDataBase> createState() => _ReportsDataBaseState();
@@ -21,42 +22,32 @@ class ReportsDataBase extends StatefulWidget {
 class _ReportsDataBaseState extends State<ReportsDataBase> {
   bool eliminar = false;
   bool isLoading = false;
-  String uId = '';
-  String uEmail = '';
+  String userId = '';
+  String userEmail = '';
+  
+  
+  
+  
 
   @override
   void initState() {
-    getUserId();
+   
     super.initState();
-     FirebaseAuth.instance.authStateChanges().listen((User? user) {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
-        print('User is currently signed out!');
+       
       } else {
         setState(() {
-          userName = user.displayName.toString();
+          userId = user.uid.toString();
           userEmail = user.email.toString();
         });
       }
     });
-
   }
 
-  void getUserId() async {
-    FirebaseAuth auth = FirebaseAuth.instance;
-    User? usuario = auth.currentUser;
 
-    if (usuario != null) {
-      setState(() {
-        uId = usuario.uid;
-        uEmail = usuario.email!;
-      });
-    } else {
-      // Manejar el caso en que no hay usuario autenticado
-    }
-  }
 
-  String userName = '';
-  String userEmail = '';
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -69,31 +60,40 @@ class _ReportsDataBaseState extends State<ReportsDataBase> {
         ? SizedBox(
             width: wz * 0.99,
             height: hz * 0.21,
-            child: StreamBuilder<List<Map<String, dynamic>>>(
-              stream: reportStream(widget.personId, uEmail, userName),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else if (snapshot.data == null || snapshot.data!.isEmpty) {
-                  return const Center(
-                    child: Text(
-                      'No hay reportes registrados',
-                      style: TextStyle(
-                        color: AppColors.textColor,
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+                future: reportFuture(widget.personId, userEmail, userId),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    // Muestra un mensaje de error si hay un problema con la obtención de datos.
+                   
+                    return Text('Error Manuel mirame: ${snapshot.error}');
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    // Maneja el caso en el que no hay datos.
+                  
+                    return  Center(
+                      child: Text(
+                        'No hay reportes registrados para ${widget.personName}',
+                        style: const TextStyle(
+                          color: AppColors.textColor,
+                        ),
                       ),
-                    ),
-                  );
-                } else {
+                    );
+                  } else {
+                    
                   final List<Map<String, dynamic>> reportes = snapshot.data!;
 
-                  return ListView.builder(
+                    return ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: reportes.length,
                     itemBuilder: (context, index) {
                       final report = reportes[index];
                       return CardReport(
+                        isEmpty: false,
+                        isError: false,
+                        isLoading: false,
                         setLoading: setLoading,
                         personId: widget.personId,
                         reportId: report['id'],
@@ -103,9 +103,9 @@ class _ReportsDataBaseState extends State<ReportsDataBase> {
                     },
                   );
                 }
-              },
-            ),
-          )
+                  }
+                  
+          ))
         : Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

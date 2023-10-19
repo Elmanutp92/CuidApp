@@ -43,11 +43,11 @@ class _CardPruebaState extends State<CardPrueba> {
 
   @override
   void initState() {
-    print('urlImage desde init state: $urlImage');
+  
     super.initState();
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
-        print('User is currently signed out!');
+
       } else {
         setState(() {
           userName = user.displayName.toString();
@@ -70,17 +70,11 @@ class _CardPruebaState extends State<CardPrueba> {
         future: Future.value(urlImage),
         builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
           if (snapshot.hasError) {
-            WithImagePerson(
-              personLastName: widget.personLastName,
-              personId: widget.personId,
-              personName: widget.personName,
-              personAge: widget.personAge,
-              personGender: widget.personGender,
-              urlPersonImage: snapshot.data.toString(),
-            );
+            return const Text('Error al obtener la URL de la imagen');
           } else if (!snapshot.hasData ||
               snapshot.data!.isEmpty ||
-              snapshot.data == null) {
+              snapshot.data == null ||
+              snapshot.data == '') {
             return WithImagePerson(
               personLastName: widget.personLastName,
               personId: widget.personId,
@@ -88,11 +82,20 @@ class _CardPruebaState extends State<CardPrueba> {
               personAge: widget.personAge,
               personGender: widget.personGender,
               urlPersonImage: snapshot.data.toString(),
+              isLoading: false,
             );
           } else if (snapshot.connectionState == ConnectionState.waiting) {
             // Muestra un indicador de carga mientras esperas los datos.
 
-            return const Center(child: CircularProgressIndicator());
+            return WithImagePerson(
+              personLastName: widget.personLastName,
+              personId: widget.personId,
+              personName: widget.personName,
+              personAge: widget.personAge,
+              personGender: widget.personGender,
+              urlPersonImage: snapshot.data.toString(),
+              isLoading: true,
+            );
           } else if (snapshot.data! == '') {
             const Text('url vacias');
           }
@@ -103,6 +106,7 @@ class _CardPruebaState extends State<CardPrueba> {
             personAge: widget.personAge,
             personGender: widget.personGender,
             urlPersonImage: snapshot.data.toString(),
+            isLoading: false,
           );
         });
   }

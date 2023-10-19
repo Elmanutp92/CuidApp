@@ -38,7 +38,7 @@ class _CardProfileState extends State<CardProfile> {
   Widget build(BuildContext context) {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
-        print('User is currently signed out!');
+      
       } else {
         setState(() {
           userName = user.displayName.toString();

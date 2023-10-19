@@ -8,7 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 
 class MoreMenu extends StatefulWidget {
-   MoreMenu({super.key, required this.setLoading, required this.logOutOk, required this.logOutNotOk, required this.deleteUserOk, required this.deleteUserNotOk, required this.deleteUserNotOkError, this.currentUser});
+   const MoreMenu({super.key, required this.setLoading, required this.logOutOk, required this.logOutNotOk, required this.deleteUserOk, required this.deleteUserNotOk, required this.deleteUserNotOkError, this.currentUser});
   final Function setLoading;
   final Function logOutOk;
   final Function logOutNotOk;
@@ -132,7 +132,7 @@ class _MoreMenuState extends State<MoreMenu> {
         ).then((value) {
           // Maneja la opción seleccionada si es necesario
           if (value != null) {
-            print('Opción seleccionada: $value');
+            
           }
         });
       },

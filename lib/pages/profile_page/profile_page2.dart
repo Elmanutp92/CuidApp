@@ -32,7 +32,7 @@ class _ProfilePage2State extends State<ProfilePage2> {
   Widget build(BuildContext context) {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
-        print('User is currently signed out!');
+       
       } else {
         currentUser = user;
         setState(() {

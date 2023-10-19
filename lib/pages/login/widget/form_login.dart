@@ -158,7 +158,7 @@ class _FormLoginState extends State<FormLogin> {
                 ),
               isUserActive ?  IconButton(
                     onPressed: () async {
-                      print('autenticando');
+                   
 
                       try {
                         setState(() {
@@ -168,14 +168,14 @@ class _FormLoginState extends State<FormLogin> {
                         bool isAuthenticated = await authenticate();
 
                         if (isAuthenticated) {
-                          print('autenticado');
+                        
                           // ignore: use_build_context_synchronously
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => const HomePage()));
                         } else {
-                          print('no autenticado');
+                         
                           // ignore: use_build_context_synchronously
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -184,7 +184,7 @@ class _FormLoginState extends State<FormLogin> {
                           );
                         }
                       } catch (e) {
-                        print('error al autenticar $e ');
+                       
                         return;
                       } finally {
                         setState(() {
