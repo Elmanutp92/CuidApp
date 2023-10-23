@@ -1,4 +1,5 @@
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:cuida_app/pages/home/widget/bienvenido.dart';
 
 import 'package:cuida_app/pages/home/widget/people_list.dart';
@@ -58,6 +59,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   void newPersonOk() {
+     final player = AudioPlayer();
+    player.play(AssetSource('sound.mp3'));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: AppColors.primaryColor,
@@ -73,6 +76,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   void newPersonFail() {
+     final player = AudioPlayer();
+    player.play(AssetSource('error.mp3'));
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Ups, Error inesperado'),

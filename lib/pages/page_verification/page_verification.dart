@@ -20,7 +20,7 @@ class VerificationPage extends StatefulWidget {
 class VerificationPageState extends State<VerificationPage> {
   late Timer _timer;
   User? currentUser;
-  int milliseconds = 20000;
+  int milliseconds = 60000;
   double progress = 0.75;
   bool isLoading = false;
   bool isVerified = false;
@@ -46,7 +46,7 @@ class VerificationPageState extends State<VerificationPage> {
       if (milliseconds > 0) {
         setState(() {
           milliseconds = milliseconds - 1;
-          progress = progress - 0.0000375;
+          progress = progress - 0.0000125;
         });
       } else {
    
@@ -70,62 +70,65 @@ class VerificationPageState extends State<VerificationPage> {
       }
     });
 
-    return Scaffold(
-      body: Center(
-        child: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(Icons.send, size: dz * 0.1, color: Colors.grey),
-              ),
-              SizedBox(
-                width: wz * 0.75,
-                child: Text(
-                  Copies.emailEnviado,
-                  textAlign: TextAlign.justify,
-                  style: GoogleFonts.poppins(
-                    fontSize: dz * 0.02,
-                    color: AppColors.textColor,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        body: Center(
+          child: SafeArea(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(Icons.send, size: dz * 0.1, color: Colors.grey),
+                ),
+                SizedBox(
+                  width: wz * 0.75,
+                  child: Text(
+                    Copies.emailEnviado,
+                    textAlign: TextAlign.justify,
+                    style: GoogleFonts.poppins(
+                      fontSize: dz * 0.02,
+                      color: AppColors.textColor,
+                    ),
                   ),
                 ),
-              ),
-              !isLoading
-                  ? Stack(children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.grey[300],
+                !isLoading
+                    ? Stack(children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.grey[300],
+                        ),
+                        width: wz * 0.75,
+                        height: hz * 0.01,
                       ),
-                      width: wz * 0.75,
-                      height: hz * 0.01,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: progress >= 0 && progress < 0.25
-                            ? Colors.red
-                            : progress > 0.25 && progress <= 0.5
-                                ? Colors.yellow
-                                : Colors.green,
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: progress >= 0 && progress < 0.25
+                              ? Colors.red
+                              : progress > 0.25 && progress <= 0.5
+                                  ? Colors.yellow
+                                  : Colors.green,
+                        ),
+                        width: progressWc(),
+                        height: hz * 0.01,
                       ),
-                      width: progressWc(),
-                      height: hz * 0.01,
-                    ),
-                  ])
-                  : const CircularProgressIndicator(),
-              TextButton(
-                onPressed: () {
-                  _timer.cancel();
-                  userDelete();
-                },
-                child: const Text(
-                  'Cancelar',
-                  style: TextStyle(color: Colors.red),
-                ),
-              )
-            ],
+                    ])
+                    : const CircularProgressIndicator(),
+                TextButton(
+                  onPressed: () {
+                    _timer.cancel();
+                    userDelete();
+                  },
+                  child: const Text(
+                    'Cancelar',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

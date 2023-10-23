@@ -4,6 +4,7 @@ import 'package:cuida_app/pages/login/login.dart';
 import 'package:cuida_app/styles/colors.dart';
 import 'package:cuida_app/styles/responsive.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class FormRegister extends StatefulWidget {
@@ -27,6 +28,9 @@ class _FormRegisterState extends State<FormRegister> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+
+
   final _formKey = GlobalKey<FormState>();
 
   bool validarCorreo(String correo) {
@@ -36,14 +40,14 @@ class _FormRegisterState extends State<FormRegister> {
 
     return regex.hasMatch(correo);
   }
-   bool validarNombre(String nombre) {
-  final RegExp regex = RegExp(
-    r'^\S+$',
-  );
 
-  return regex.hasMatch(nombre);
-}
+  bool validarNombre(String nombre) {
+    final RegExp regex = RegExp(
+      r'^\S+$',
+    );
 
+    return regex.hasMatch(nombre);
+  }
 
   @override
   void dispose() {
@@ -78,22 +82,30 @@ class _FormRegisterState extends State<FormRegister> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
+                    inputFormatters: [
+              // Utiliza el TextInputFormatter personalizado
+              UpperCaseTextFormatter(),
+            ],
                     controller: _nameController,
                     cursorColor: AppColors.textColor,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Por favor ingrese un Nombre';
-                      } 
-                      if (value.length > 12){
+                      }
+                      if (value.length > 12) {
                         return 'El nombre debe tener menos de 12 caracteres';
-                      } 
+                      }
                       if (!validarNombre(value)) {
-                        return 'Por favor ingrese solo su primer nombre(sin espacios)';
+                        return 'Por favor ingrese solo su primer nombre';
+                      }
+                      if (!RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
+                        return 'Solo se permiten letras';
                       }
 
                       return null;
                     },
                     decoration: InputDecoration(
+                      hintText: 'Ej: Juan',
                       focusedBorder: const OutlineInputBorder(
                         borderSide: BorderSide(
                           color: AppColors.primaryColor,
@@ -102,7 +114,7 @@ class _FormRegisterState extends State<FormRegister> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      labelText: 'Nombre',
+                      labelText: 'Nombre de usuario',
                       labelStyle: GoogleFonts.poppins(
                         fontSize: dz * 0.02,
                       ),
@@ -180,6 +192,47 @@ class _FormRegisterState extends State<FormRegister> {
                     ),
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    obscureText: obscurePass,
+                    controller: _confirmPasswordController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor ingrese una contraseña';
+                      }
+                      if (value != _passwordController.text) {
+                        return 'Las contraseñas no coinciden';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            obscurePass = !obscurePass;
+                          });
+                        },
+                        icon: Icon(
+                          obscurePass ? Icons.visibility_off : Icons.visibility,
+                          color: AppColors.textColor,
+                        ),
+                      ),
+                      focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: AppColors.primaryColor,
+                        ),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      labelText: 'Confirma tu contraseña',
+                      labelStyle: GoogleFonts.poppins(
+                        fontSize: dz * 0.02,
+                      ),
+                    ),
+                  ),
+                ),
                 const Spacer(),
                 Container(
                   height: hz * 0.09,
@@ -246,5 +299,20 @@ class _FormRegisterState extends State<FormRegister> {
             ),
           )),
     );
+  }
+
+  
+}
+
+class UpperCaseTextFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    if (newValue.text.isNotEmpty) {
+      return TextEditingValue(
+        text: newValue.text[0].toUpperCase() + newValue.text.substring(1),
+        selection: newValue.selection,
+      );
+    }
+    return newValue;
   }
 }

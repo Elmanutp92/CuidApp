@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cuida_app/Firebase/storage/get_image_profile.dart';
 import 'package:cuida_app/pages/profile_page/profile_page2.dart';
 import 'package:cuida_app/pages/profile_page/widget/profile_image.dart';
@@ -15,15 +16,13 @@ class ProfileImageHome extends StatefulWidget {
     required this.wzo,
     required this.hzo,
     required this.border,
-    required this.isHome, 
+    required this.isHome,
   }) : super(key: key);
 
   final double wzo;
   final double hzo;
   final bool border;
   final bool isHome;
-  
-
 
   @override
   // ignore: library_private_types_in_public_api
@@ -42,7 +41,6 @@ class _ProfileImageHomeState extends State<ProfileImageHome> {
     super.initState();
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
-      
       } else {
         setState(() {
           userName = user.displayName.toString();
@@ -91,7 +89,8 @@ class _ProfileImageHomeState extends State<ProfileImageHome> {
                   context, setImage, urlImage.toString(), false);
             },
       child: FutureBuilder<String?>(
-        future: Future.value(urlImage), // Usamos Future.value para evitar llamadas innecesarias
+        future: Future.value(
+            urlImage), // Usamos Future.value para evitar llamadas innecesarias
         builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Column(
@@ -164,14 +163,13 @@ class _ProfileImageHomeState extends State<ProfileImageHome> {
           borderRadius: BorderRadius.circular(100),
         ),
         child: ClipOval(
-          clipBehavior: Clip.antiAlias,
-          child: Image.network(
-            image,
-            width: wt,
-            height: ht,
-            fit: BoxFit.cover,
-          ),
-        ),
+            clipBehavior: Clip.antiAlias,
+            child: CachedNetworkImage(
+              imageUrl: image,
+              height: ht,
+              width: wt,
+              fit: BoxFit.cover,
+            )),
       ),
     );
   }
@@ -194,14 +192,13 @@ class _ProfileImageHomeState extends State<ProfileImageHome> {
           borderRadius: BorderRadius.circular(100),
         ),
         child: ClipOval(
-          clipBehavior: Clip.antiAlias,
-          child: Image.network(
-            image,
-            width: wt,
-            height: ht,
-            fit: BoxFit.cover,
-          ),
-        ),
+            clipBehavior: Clip.antiAlias,
+            child: CachedNetworkImage(
+              imageUrl: image,
+              height: ht,
+              width: wt,
+              fit: BoxFit.cover,
+            )),
       ),
     );
   }

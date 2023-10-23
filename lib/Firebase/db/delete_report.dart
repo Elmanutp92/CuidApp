@@ -5,7 +5,7 @@ final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 Future<void> deleteReport(
     Function deleteOk, Function deleteNotOk, String personId, Function setLoading, String reportId, String userId, String userEmail) async {
   try {
-    
+    print('Eliminando reporte...');
     setLoading();
     
     await _firestore
@@ -18,7 +18,11 @@ Future<void> deleteReport(
         .delete();
 
     deleteOk();
-  } catch (e) {
+  } on FirebaseException  {
+    print('Error al eliminar reporte en Firebase');
+  }
+   catch (e) {
+    print('Error al eliminar reporte: $e');
   
     deleteNotOk();
     // Maneja el error como desees, por ejemplo, imprimirlo en la consola.

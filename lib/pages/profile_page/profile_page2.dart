@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:cuida_app/pages/home/widget/profile_image_home.dart';
 import 'package:cuida_app/pages/loading_page.dart';
 import 'package:cuida_app/pages/login/login.dart';
@@ -198,6 +199,8 @@ class _ProfilePage2State extends State<ProfilePage2> {
   }
 
   void logOutOk() {
+     final player = AudioPlayer();
+    player.play(AssetSource('sound.mp3'));
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Sesión Cerrada'),
@@ -208,6 +211,8 @@ class _ProfilePage2State extends State<ProfilePage2> {
   }
 
   void logOutNotOk() {
+     final player = AudioPlayer();
+    player.play(AssetSource('error.wav'));
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Ups, Algo salió mal'),
@@ -216,6 +221,8 @@ class _ProfilePage2State extends State<ProfilePage2> {
   }
 
   void deleteUserOk() {
+     final player = AudioPlayer();
+    player.play(AssetSource('sound.mp3'));
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         duration: Duration(seconds: 1),
@@ -227,6 +234,8 @@ class _ProfilePage2State extends State<ProfilePage2> {
   }
 
   void deleteUserNotOk() {
+     final player = AudioPlayer();
+    player.play(AssetSource('error.wav'));
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Ups, no se pudo eliminar la cuenta'),
@@ -235,6 +244,8 @@ class _ProfilePage2State extends State<ProfilePage2> {
   }
 
   void deleteUserNotOkError(e) {
+     final player = AudioPlayer();
+    player.play(AssetSource('error.wav'));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Ups, Error: $e'),

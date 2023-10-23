@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cuida_app/Firebase/storage/get_image_profile.dart';
 import 'package:cuida_app/pages/home/widget/profile_image_home.dart';
 import 'package:cuida_app/styles/colors.dart';
@@ -29,7 +30,6 @@ class _BienvenidoState extends State<Bienvenido> {
     super.initState();
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
-      
       } else {
         setState(() {
           userName = user.displayName.toString();
@@ -105,18 +105,16 @@ class _BienvenidoState extends State<Bienvenido> {
                             bottomLeft: Radius.circular(50),
                             bottomRight: Radius.circular(50),
                           ),
-
                           image: DecorationImage(
-                            
-                        image: NetworkImage(snapshot.data.toString()),
-                        fit: BoxFit.cover,
-                      )),
+                            image: CachedNetworkImageProvider(snapshot.data.toString()),
+                            fit: BoxFit.cover,
+                          )),
                     ),
                     BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
                       child: Container(
-                        decoration:  BoxDecoration(
-                        color: Colors.white.withOpacity(0.1),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.1),
                           borderRadius: const BorderRadius.only(
                             bottomLeft: Radius.circular(50),
                             bottomRight: Radius.circular(50),
@@ -156,13 +154,12 @@ class _BienvenidoState extends State<Bienvenido> {
                                   fontSize: dz * 0.02,
                                   color: AppColors.textColor,
                                   shadows: [
-                                const Shadow(
-                                  color: Colors.white, // Color del borde
-                                  offset: Offset(0, 0),
-                                  blurRadius: 10, // Ancho del borde
-                                ),
-                              ],
-                                  
+                                    const Shadow(
+                                      color: Colors.white, // Color del borde
+                                      offset: Offset(0, 0),
+                                      blurRadius: 10, // Ancho del borde
+                                    ),
+                                  ],
                                 ),
                               ),
                               Text(
@@ -172,12 +169,12 @@ class _BienvenidoState extends State<Bienvenido> {
                                   fontWeight: FontWeight.w600,
                                   color: AppColors.textColor,
                                   shadows: [
-                                const Shadow(
-                                  color: Colors.white, // Color del borde
-                                  offset: Offset(0, 0),
-                                  blurRadius: 10, // Ancho del borde
-                                ),
-                              ],
+                                    const Shadow(
+                                      color: Colors.white, // Color del borde
+                                      offset: Offset(0, 0),
+                                      blurRadius: 10, // Ancho del borde
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],

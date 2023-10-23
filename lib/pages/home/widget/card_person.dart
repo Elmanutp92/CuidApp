@@ -95,9 +95,7 @@ class _CardPersonState extends State<CardPerson> {
                                   )),
                               TextButton(
                                   onPressed: () async {
-                                    await deletePerson(
-                                        widget.personId, widget.setLoading, userName);
-                                    widget.setEliminar();
+                                   
                                   },
                                   child: Text(
                                     'Eliminar',

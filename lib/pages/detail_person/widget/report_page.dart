@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:cuida_app/pages/detail_person/widget/form_report.dart';
 import 'package:cuida_app/pages/loading_page.dart';
 import 'package:cuida_app/styles/colors.dart';
@@ -44,6 +45,8 @@ class _ReportsPageState extends State<ReportsPage> {
     );
   }
    void newReportOk() {
+     final player = AudioPlayer();
+    player.play(AssetSource('sound.mp3'));
     ScaffoldMessenger.of(context).showSnackBar(
        SnackBar(
         backgroundColor: AppColors.primaryColor,
@@ -58,6 +61,8 @@ class _ReportsPageState extends State<ReportsPage> {
   }
 
   void newReportFail() {
+     final player = AudioPlayer();
+    player.play(AssetSource('error.mp3'));
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Ups, Error inesperado'),

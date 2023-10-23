@@ -107,14 +107,8 @@ Future<void> uploadImageFile(
                                     color: AppColors.primaryColor),
                               ),
                             )
-                          : ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    AppColors.primaryColor.withOpacity(0.5),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                              ),
+                          : TextButton(
+                             
                               onPressed: () async {
                                 setState(() {
                                   isLoading = true;
@@ -124,48 +118,32 @@ Future<void> uploadImageFile(
                                   return;
                                 } else {
                                   final subio = !addPerson
+                                      // ignore: use_build_context_synchronously
                                       ? await uploadImageProfile(
-                                          localImageProfile!, userName, userId)
+                                          localImageProfile!, userName, userId, context)
+                                      // ignore: use_build_context_synchronously
                                       : await uploadImagePerson(
                                           localImageProfile!,
                                           personId!,
                                           userName,
-                                          userId);
+                                          userId, context);
                                   if (subio == 'Error') {
                                    
                                   } else {
                                 
                                     // ignore: use_build_context_synchronously
-                                    !addPerson
-                                        // ignore: use_build_context_synchronously
-                                        ? Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const ProfilePage2())
-
-                                            // ignore: use_build_context_synchronously
-                                            )
-                                        // ignore: use_build_context_synchronously
-                                        : Navigator.pop(context);
+                                  
                                   }
                                 }
                                 setState(() {
                                   isLoading = false;
                                 });
                               },
-                              child: const Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Text(
-                                    'Subir imagen',
-                                    style: TextStyle(
-                                      color: AppColors.textColor,
-                                    ),
-                                  ),
-                                  Icon(Icons.upload_file),
-                                ],
+                              child: const Text(
+                                'Subir imagen',
+                                style: TextStyle(
+                                  color: Colors.blue,
+                                ),
                               ),
                             ),
                   IconButton(
