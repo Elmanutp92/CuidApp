@@ -9,7 +9,7 @@ import 'package:cuida_app/pages/profile_page/profile_page2.dart';
 import 'package:cuida_app/styles/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 
 Future<void> uploadImageFile(
     context, Function setImage, String imageUrl, bool addPerson,
@@ -17,35 +17,14 @@ Future<void> uploadImageFile(
   File? localImageProfile;
   bool isLoading = false;
 
-  void newPersonOk() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: AppColors.primaryColor,
-        content: Text(
-          'Persona agregada correctamente',
-          style: GoogleFonts.poppins(color: AppColors.textColor),
-        ),
-        duration: const Duration(seconds: 1),
-      ),
-    );
-    Navigator.pop(context);
-  }
 
-  void newPersonFail() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Ups, Error inesperado'),
-        duration: Duration(seconds: 1),
-      ),
-    );
-  }
 
   String userName = '';
   String userId = '';
 
   FirebaseAuth.instance.authStateChanges().listen((User? user) {
     if (user == null) {
-      print('User is currently signed out!');
+     
     } else {
       userName = user.displayName.toString();
       userId = user.uid.toString();
@@ -58,7 +37,7 @@ Future<void> uploadImageFile(
       return StatefulBuilder(
         builder: (context, setState) {
           return AlertDialog(
-            title: Center(child: const Text('Selecciona una imagen')),
+            title: const Center(child: Text('Selecciona una imagen')),
             content: SingleChildScrollView(
               child: Column(
                 children: [
@@ -140,7 +119,7 @@ Future<void> uploadImageFile(
                                 setState(() {
                                   isLoading = true;
                                 });
-                                print('Subiendo imagen');
+                                
                                 if (localImageProfile == null) {
                                   return;
                                 } else {
@@ -153,9 +132,9 @@ Future<void> uploadImageFile(
                                           userName,
                                           userId);
                                   if (subio == 'Error') {
-                                    print('Error al subir imagen');
+                                   
                                   } else {
-                                    print('Imagen subida correctamente');
+                                
                                     // ignore: use_build_context_synchronously
                                     !addPerson
                                         // ignore: use_build_context_synchronously
@@ -167,6 +146,7 @@ Future<void> uploadImageFile(
 
                                             // ignore: use_build_context_synchronously
                                             )
+                                        // ignore: use_build_context_synchronously
                                         : Navigator.pop(context);
                                   }
                                 }

@@ -29,7 +29,7 @@ class _BienvenidoState extends State<Bienvenido> {
     super.initState();
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
-        print('User is currently signed out!');
+      
       } else {
         setState(() {
           userName = user.displayName.toString();

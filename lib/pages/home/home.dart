@@ -1,13 +1,15 @@
-import 'package:cuida_app/pages/home/widget/bienvenido.dart';
-import 'package:cuida_app/pages/home/widget/people_list.dart';
 
+import 'package:cuida_app/pages/home/widget/bienvenido.dart';
+
+import 'package:cuida_app/pages/home/widget/people_list.dart';
 
 import 'package:cuida_app/styles/colors.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
+import 'package:flutter/material.dart';
+
+import 'package:google_fonts/google_fonts.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -34,7 +36,7 @@ class _HomePageState extends State<HomePage> {
     //double hz = responsive.screenHeight;
     return WillPopScope(
         onWillPop: () async => false,
-        child:  Scaffold(
+        child: Scaffold(
           backgroundColor: AppColors.backgroundColor,
           body: SafeArea(
             child: SingleChildScrollView(
@@ -66,7 +68,8 @@ class _HomePageState extends State<HomePage> {
         duration: const Duration(seconds: 1),
       ),
     );
-    Navigator.push(context, MaterialPageRoute(builder: (context) => super.widget));
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => super.widget));
   }
 
   void newPersonFail() {

@@ -7,6 +7,7 @@ class UserDataInfo extends ChangeNotifier {
   String _userEmail = '';
   String _metadata = '';
 
+  // ignore: non_constant_identifier_names
   DataInfo() {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {

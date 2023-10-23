@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
-Stream<List<Map<String, dynamic>>> reportStream(String personId, String userEmail, String userId ) {
+Future<List<Map<String, dynamic>>> reportFuture(
+    String personId, String userEmail, String userId) async {
   final db = FirebaseFirestore.instance;
   final collectionReference = db
       .collection('users')
@@ -10,7 +10,7 @@ Stream<List<Map<String, dynamic>>> reportStream(String personId, String userEmai
       .doc(personId)
       .collection('reportes');
 
-  return collectionReference.snapshots().map((querySnapshot) {
-    return querySnapshot.docs.map((doc) => doc.data()).toList();
-  });
+  final querySnapshot = await collectionReference.get();
+
+  return querySnapshot.docs.map((doc) => doc.data()).toList();
 }

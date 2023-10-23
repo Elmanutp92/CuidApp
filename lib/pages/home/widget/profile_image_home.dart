@@ -26,6 +26,7 @@ class ProfileImageHome extends StatefulWidget {
 
 
   @override
+  // ignore: library_private_types_in_public_api
   _ProfileImageHomeState createState() => _ProfileImageHomeState();
 }
 
@@ -41,7 +42,7 @@ class _ProfileImageHomeState extends State<ProfileImageHome> {
     super.initState();
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
-        print('User is currently signed out!');
+      
       } else {
         setState(() {
           userName = user.displayName.toString();

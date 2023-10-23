@@ -25,6 +25,7 @@ class ProfileImageHome extends StatefulWidget {
   final bool isHome;
 
   @override
+  // ignore: library_private_types_in_public_api
   _ProfileImageHomeState createState() => _ProfileImageHomeState();
 }
 
@@ -45,7 +46,7 @@ class _ProfileImageHomeState extends State<ProfileImageHome> {
   Widget build(BuildContext context) {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
-        print('User is currently signed out!');
+     
       } else {
         setState(() {
           userName = user.displayName.toString();
@@ -75,7 +76,7 @@ class _ProfileImageHomeState extends State<ProfileImageHome> {
         child: FutureBuilder<String?>(
           future: getUrlImageProfile(userId, userName),
           builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
-            print(snapshot.data);
+         
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator();
             } else if (snapshot.hasError || snapshot.data == 'Error') {

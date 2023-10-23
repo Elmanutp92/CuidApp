@@ -14,12 +14,18 @@ class CardReport extends StatefulWidget {
       required this.descripcion,
       required this.personId,
       required this.reportId,
-      required this.setLoading});
+      required this.setLoading,
+      this.isLoading,
+      this.isError,
+      this.isEmpty});
   final String titulo;
   final String descripcion;
   final String personId;
   final String reportId;
   final Function setLoading;
+  final bool? isLoading;
+  final bool? isError;
+  final bool? isEmpty;
 
   @override
   State<CardReport> createState() => _CardReportState();
@@ -28,15 +34,17 @@ class CardReport extends StatefulWidget {
 class _CardReportState extends State<CardReport> {
   bool isLoading = false;
   String userName = '';
+  String userEmail = '';
 
   @override
   Widget build(BuildContext context) {
-     FirebaseAuth.instance.authStateChanges().listen((User? user) {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
-        print('User is currently signed out!');
+      
       } else {
         setState(() {
           userName = user.displayName.toString();
+          userEmail = user.email.toString();
         });
       }
     });
@@ -55,30 +63,50 @@ class _CardReportState extends State<CardReport> {
                     Container(
                       width: wz * 0.9,
                       color: AppColors.accentColor.withOpacity(0.1),
-                      child: Text(widget.titulo,
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.poppins(
-                            fontSize: wz * 0.09,
-                            fontWeight: FontWeight.bold,
-                          )),
+                      child: isLoading
+                          ? const CircularProgressIndicator()
+                          : Text(
+                              widget.isError!
+                                  ? 'Error'
+                                  : widget.isEmpty!
+                                      ? 'isEmpty'
+                                      : widget.titulo,
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.poppins(
+                                fontSize: wz * 0.09,
+                                fontWeight: FontWeight.bold,
+                              )),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: SizedBox(
                         width: wz * 0.8,
                         height: hz * 0.35,
-                        child: Text(
-                          widget.descripcion,
-                          style: GoogleFonts.poppins(
-                            fontSize: wz * 0.04,
-                          ),
-                        ),
+                        child: isLoading
+                            ? const CircularProgressIndicator()
+                            : Text(
+                                widget.isError!
+                                    ? 'Error'
+                                    : widget.isEmpty!
+                                        ? 'isEmpty'
+                                        : widget.descripcion,
+                                style: GoogleFonts.poppins(
+                                  fontSize: wz * 0.04,
+                                ),
+                              ),
                       ),
                     ),
                     IconButton(
                         onPressed: () async {
+                        
                           await deleteReport(
-                              widget.personId, widget.setLoading, widget.reportId, userName);
+                              deleteOk,
+                              deleteNotOK,
+                              widget.personId,
+                              widget.setLoading,
+                              widget.reportId,
+                              userName,
+                              userEmail);
                         },
                         icon: const Icon(Icons.delete))
                   ],
@@ -87,5 +115,23 @@ class _CardReportState extends State<CardReport> {
             ),
           )
         : const LoadingPage();
+  }
+
+  void deleteOk() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Reporte eliminado'),
+        duration: Duration(seconds: 1),
+      ),
+    );
+  }
+
+  void deleteNotOK() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Error al eliminar el reporte'),
+        duration: Duration(seconds: 1),
+      ),
+    );
   }
 }

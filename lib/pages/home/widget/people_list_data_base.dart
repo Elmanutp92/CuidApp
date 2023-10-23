@@ -20,11 +20,10 @@ class _PeopleListDataBaseState extends State<PeopleListDataBase> {
 
   @override
   void initState() {
-   
     super.initState();
-     FirebaseAuth.instance.authStateChanges().listen((User? user) {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
-        print('User is currently signed out!');
+       
       } else {
         setState(() {
           userId = user.uid.toString();
@@ -36,8 +35,6 @@ class _PeopleListDataBaseState extends State<PeopleListDataBase> {
 
   @override
   Widget build(BuildContext context) {
-   
-
     final Responsive responsive = Responsive(context);
     double wz = responsive.screenWidth;
     double hz = responsive.screenHeight;
@@ -47,15 +44,15 @@ class _PeopleListDataBaseState extends State<PeopleListDataBase> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           // Muestra un indicador de carga mientras esperas los datos.
-          print('Esperando datos...');
+          
           return const CircularProgressIndicator();
         } else if (snapshot.hasError) {
           // Muestra un mensaje de error si hay un problema con la obtención de datos.
-          print('Error: ${snapshot.error}');
+         
           return Text('Error: ${snapshot.error}');
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           // Maneja el caso en el que no hay datos.
-          print('No hay personas registradas');
+        
           return const Center(
             child: Text(
               'No hay personas registradas',
@@ -66,15 +63,13 @@ class _PeopleListDataBaseState extends State<PeopleListDataBase> {
           );
         } else {
           // Datos cargados correctamente, construye tu interfaz de usuario.
-          print('Datos cargados correctamente: ${snapshot.data}');
+          
           final List<Map<String, dynamic>> personas = snapshot.data!;
-    
+
           return SizedBox(
-           
             width: wz * 0.99,
             height: hz * 0.21,
             child: ListView.builder(
-              
               scrollDirection: Axis.horizontal,
               itemCount: personas.length,
               itemBuilder: (context, index) {

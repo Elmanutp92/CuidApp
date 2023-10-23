@@ -10,11 +10,11 @@ class FormReport extends StatefulWidget {
       required this.setLoading,
       required this.newReportOk,
       required this.newReportFail,
-      required this.docId});
+      required this.personId});
   final Function setLoading;
   final Function newReportOk;
   final Function newReportFail;
-  final String docId;
+  final String personId;
 
   @override
   State<FormReport> createState() => _FormReportState();
@@ -23,16 +23,16 @@ class FormReport extends StatefulWidget {
 class _FormReportState extends State<FormReport> {
   String userId = '';
   String userEmail = '';
-  
+
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-
   @override
-  Widget build(BuildContext context) {
-     FirebaseAuth.instance.authStateChanges().listen((User? user) {
+  void initState() {
+    super.initState();
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
-        print('User is currently signed out!');
+     
       } else {
         setState(() {
           userId = user.uid.toString();
@@ -40,6 +40,10 @@ class _FormReportState extends State<FormReport> {
         });
       }
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     //final Responsive responsive = Responsive(context);
     //double dz = responsive.diagonal;
     //double wz = responsive.screenWidth;
@@ -99,13 +103,16 @@ class _FormReportState extends State<FormReport> {
               ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
+                     
                       newReport(
                           _titleController.text,
                           _descriptionController.text,
                           widget.setLoading,
                           widget.newReportOk,
                           widget.newReportFail,
-                          widget.docId, userEmail, userId);
+                          widget.personId,
+                          userEmail,
+                          userId);
                     }
                   },
                   child: const Text('Enviar'))

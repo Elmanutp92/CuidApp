@@ -46,7 +46,7 @@ class _DetailPersonState extends State<DetailPerson> {
     try {
       data = await getPerson(widget.personId, userEmail, userId);
     } catch (e) {
-      print('Error al obtener el documento de la persona: $e');
+    
       return;
     } finally {}
   }
@@ -56,7 +56,7 @@ class _DetailPersonState extends State<DetailPerson> {
     super.initState();
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
-        print('User is currently signed out!');
+    
       } else {
         setState(() {
           userId = user.uid.toString();

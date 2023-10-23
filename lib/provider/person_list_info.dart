@@ -23,12 +23,12 @@ class PersonListProvider extends ChangeNotifier {
           .collection('personas')
           .get();
 
-      _personList = snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+      _personList = snapshot.docs.map((doc) => doc.data()).toList();
       _controller.add(_personList); // Notifica al StreamController sobre el cambio
       notifyListeners();
     } catch (error) {
       // Maneja el error según tus necesidades
-      print('Error al cargar la lista de personas: $error');
+    
     }
   }
 }

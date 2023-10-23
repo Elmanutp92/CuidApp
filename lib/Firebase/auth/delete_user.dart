@@ -25,14 +25,14 @@ Future<void> deleteUser(
       await user.delete();
       deleteUserOk();
     } else {
-      print('No hay usuario logueado');
+  
       deleteUserNotOk();
     }
   } on FirebaseException catch (e) {
-    print('Error: ${e.code} ${e.message}');
+
     deleteUserNotOkError(e.code);
   } catch (e) {
-    print('Error: $e');
+
     deleteUserNotOk();
   } finally {
     setLoading();

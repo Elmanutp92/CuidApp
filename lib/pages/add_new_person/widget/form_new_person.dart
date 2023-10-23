@@ -30,7 +30,7 @@ class _FormNewPersonState extends State<FormNewPerson> {
   Widget build(BuildContext context) {
      FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
-        print('User is currently signed out!');
+    
       } else {
         setState(() {
           userId = user.uid.toString();
@@ -68,9 +68,16 @@ class _FormNewPersonState extends State<FormNewPerson> {
                 ),
               ),
               TextFormField(
+                keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor ingrese una edad';
+                  } 
+                  if(
+                    int.tryParse(value) == null
+                  ){
+                    return 'Por favor ingrese una edad valida(numero entero)';
+
                   }
                   return null;
                 },
@@ -83,6 +90,9 @@ class _FormNewPersonState extends State<FormNewPerson> {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor ingrese un sexo';
+                  }
+                  if (value != 'hombre' && value != 'mujer'){
+                    return 'Por favor ingrese un sexo valido, ''hombre'' o ''mujer''';
                   }
                   return null;
                 },
