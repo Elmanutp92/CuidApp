@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cuida_app/Firebase/db/delete_person.dart';
-import 'package:cuida_app/Firebase/db/get_person.dart';
+
 import 'package:cuida_app/Firebase/storage/get_image_person.dart';
 import 'package:cuida_app/pages/detail_person/widget/info_data.dart';
 import 'package:cuida_app/pages/detail_person/widget/reports.dart';

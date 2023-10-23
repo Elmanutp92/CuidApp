@@ -1,4 +1,4 @@
-import 'package:cuida_app/Firebase/db/delete_person.dart';
+
 import 'package:cuida_app/pages/detail_person/detail.person.dart';
 import 'package:cuida_app/styles/colors.dart';
 import 'package:cuida_app/styles/responsive.dart';

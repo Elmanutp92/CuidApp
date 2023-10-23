@@ -5,7 +5,7 @@ import 'package:cuida_app/Firebase/storage/firebase/upload_image_profile.dart';
 import 'package:cuida_app/Firebase/storage/select_image_camera.dart';
 import 'package:cuida_app/Firebase/storage/select_image_gallery.dart';
 
-import 'package:cuida_app/pages/profile_page/profile_page2.dart';
+
 import 'package:cuida_app/styles/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
