@@ -1,4 +1,4 @@
-import 'package:cuida_app/Firebase/db/delete_person.dart';
+
 import 'package:cuida_app/pages/detail_person/detail.person.dart';
 import 'package:cuida_app/styles/colors.dart';
 import 'package:cuida_app/styles/responsive.dart';
@@ -95,9 +95,7 @@ class _CardPersonState extends State<CardPerson> {
                                   )),
                               TextButton(
                                   onPressed: () async {
-                                    await deletePerson(
-                                        widget.personId, widget.setLoading, userName);
-                                    widget.setEliminar();
+                                   
                                   },
                                   child: Text(
                                     'Eliminar',

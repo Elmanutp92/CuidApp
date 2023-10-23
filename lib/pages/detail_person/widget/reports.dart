@@ -50,7 +50,7 @@ class _ReportsState extends State<Reports> {
             ],
           ),
           SizedBox(
-            height: dh * 0.55,
+            height: dh * 0.28,
             //color: Colors.amber,
             child: ReportsDataBase(
               personName: widget.personName,

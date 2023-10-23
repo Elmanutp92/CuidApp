@@ -1,14 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
-
-
-Future<Map<String, dynamic>> getPerson(String personId, String userEmail, String userId) async {
+Future<Map<String, dynamic>> getPerson(
+    String personId, String userEmail, String userId) async {
   final db = FirebaseFirestore.instance;
   final documentReference = db
       .collection('users')
-      .doc(
-          '$userEmail-$userId')
+      .doc('$userEmail-$userId')
       .collection('personas')
       .doc(personId);
 
@@ -23,7 +20,6 @@ Future<Map<String, dynamic>> getPerson(String personId, String userEmail, String
       return {}; // Retorna un mapa vacío en lugar de 'Error'
     }
   } catch (e) {
-
     return {}; // Retorna un mapa vacío en lugar de 'Error'
   }
 }
